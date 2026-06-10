@@ -1,0 +1,58 @@
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./red-social-backend
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - ./red-social-backend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    mem_limit: 512m
+    cpus: 0.5
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3000').then(() => process.exit(0)).catch(() => process.exit(1))"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    
+  frontend:
+    container_name: frontend
+    build:
+      context: ./red-social-frontend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    volumes:
+      - ./red-social-frontend:/app
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    networks:
+      - app-network
+    mem_limit: 512m
+    cpus: 0.5
+
+volumes:
+  mongo_data:
+
+networks:
+  backend-network:
+  frontend-network:
