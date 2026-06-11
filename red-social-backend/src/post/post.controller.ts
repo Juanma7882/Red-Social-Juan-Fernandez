@@ -6,37 +6,84 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import JwtPayload from 'src/auth/interfaces/jwt-payload.auth.interface';
+import { QueryPostDto } from './dto/quey-post.dto';
 
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @Req() req: { user: JwtPayload },
+  ) {
+    return this.postService.create(createPostDto, req.user);
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  findAll(
+    @Query()
+    query: QueryPostDto,
+  ) {
+    return this.postService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  findOne(
+    @Param('id')
+    id: string,
+  ) {
+    return this.postService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
-  }
-
+  @UseGuards(JwtGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  remove(
+    @Param('id')
+    id: string,
+
+    @Req()
+    req: {
+      user: JwtPayload;
+    },
+  ) {
+    return this.postService.remove(id, req.user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(':id/like')
+  like(
+    @Param('id')
+    postId: string,
+
+    @Req()
+    req: {
+      user: JwtPayload;
+    },
+  ) {
+    return this.postService.likePost(postId, req.user.sub);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':id/like')
+  unlike(
+    @Param('id')
+    postId: string,
+
+    @Req()
+    req: {
+      user: JwtPayload;
+    },
+  ) {
+    return this.postService.unlikePost(postId, req.user.sub);
   }
 }
