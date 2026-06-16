@@ -9,6 +9,9 @@ import {
 
 export class RegisterAuthDto {
   @IsString()
+  imagenPerfil!: string;
+
+  @IsString()
   nombre!: string;
 
   @IsString()

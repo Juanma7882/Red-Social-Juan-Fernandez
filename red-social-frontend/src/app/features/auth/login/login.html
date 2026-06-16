@@ -5,7 +5,7 @@
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
       <!-- Usuario -->
       <div class="mb-4">
-        <label class="block text-gray-700 mb-2">Correo electrónico</label>
+        <label class="block text-gray-700 mb-2">Correo electrónico o nombre de usuario</label>
         <input
           type="email"
           placeholder="Usuario@gmail.com"
@@ -22,7 +22,7 @@
               <span class="text-red-500 text-sm">Mínimo 3 caracteres</span>
             }
             @if (username?.errors?.['email']) {
-              <span class="text-red-500 text-sm">Ingresá un correo válido</span>
+              <span class="text-red-500 text-sm">Ingresá un correo o nombre valido</span>
             }
           </div>
         }

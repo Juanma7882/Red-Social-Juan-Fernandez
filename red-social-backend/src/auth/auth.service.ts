@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import JwtPayload from './interfaces/jwt-payload.auth.interface';
+import { Profile } from './dto/profile.auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -104,5 +105,25 @@ export class AuthService {
     return {
       token,
     };
+  }
+
+  async getNavbarUser(user: JwtPayload): Promise<Profile> {
+    try {
+      const dbUser = await this.usersService.findOne(user.sub);
+      if (dbUser === null) {
+        throw new UnauthorizedException('Usuario no encontrado');
+      }
+      return {
+        imagenPerfil: dbUser.imagenPerfil,
+        nombre: dbUser.nombre,
+        username: dbUser.username,
+      };
+    } catch (error) {
+      console.log(error);
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Usuario no encontrado');
+    }
   }
 }

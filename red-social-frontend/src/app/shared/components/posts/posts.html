@@ -1,0 +1,78 @@
+<article
+  class="w-full max-w-md mx-auto bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm dark:bg-gray-900 dark:border-gray-800"
+>
+  <header class="flex items-center justify-between gap-3 px-4 py-3">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div
+        class="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-sm font-medium text-blue-700 flex-shrink-0 dark:bg-blue-900/40 dark:text-blue-300"
+      >
+        JF
+      </div>
+      <span class="font-medium text-sm truncate">nombre de la cuenta</span>
+    </div>
+    <time class="text-xs text-gray-500 flex-shrink-0 dark:text-gray-400">fecha de publicacion</time>
+  </header>
+
+  <h2 class="text-base font-medium px-4 pb-3">Titulo de la publicacion</h2>
+
+  <!-- imagenes -->
+  <div class="post-media w-full aspect-square sm:aspect-[4/3] bg-gray-100 dark:bg-gray-800">
+    <img src="" alt="" loading="lazy" class="w-full h-full object-cover" />
+  </div>
+
+  <footer class="post-actions flex items-center justify-between px-2 py-1.5">
+    <div class="actions-left flex items-center gap-1" role="group" aria-label="acciones de la publicacion">
+      <button
+        type="button"
+        aria-label="me gusta"
+        class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
+      >
+        <i class="ti ti-heart text-lg" aria-hidden="true">🎈</i>
+        <span class="text-sm hidden sm:inline">me gusta</span>
+      </button>
+      <button
+        type="button"
+        aria-label="comentarios"
+        class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
+      >
+        <i class="ti ti-message-circle text-lg" aria-hidden="true"></i>
+        <span class="text-sm hidden sm:inline">comentarios</span>
+      </button>
+      <button
+        type="button"
+        aria-label="reenviar"
+        class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
+      >
+        <i class="ti ti-repeat text-lg" aria-hidden="true"></i>
+        <span class="text-sm hidden sm:inline">reenviar</span>
+      </button>
+      <button
+        type="button"
+        aria-label="compartir"
+        class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
+      >
+        <i class="ti ti-share-3 text-lg" aria-hidden="true"></i>
+        <span class="text-sm hidden sm:inline">compartir</span>
+      </button>
+    </div>
+    <div class="actions-right">
+      <button
+        type="button"
+        aria-label="guardar"
+        class="flex items-center px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
+      >
+        <i class="ti ti-bookmark text-lg" aria-hidden="true"></i>
+      </button>
+    </div>
+  </footer>
+
+  <p class="post-description text-sm leading-relaxed px-4 pb-4 text-gray-800 dark:text-gray-200">
+    descripcion primer renglon de la descripcion
+    <button
+      type="button"
+      class="see-more text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 ml-1"
+    >
+      ... ver mas
+    </button>
+  </p>
+</article>

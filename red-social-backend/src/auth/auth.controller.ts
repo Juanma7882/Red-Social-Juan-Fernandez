@@ -18,7 +18,7 @@ import { JwtGuard } from './guards/jwt.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('register')
   create(@Body() registerAuthDto: RegisterAuthDto) {
     return this.authService.registerUser(registerAuthDto);
   }
@@ -26,6 +26,12 @@ export class AuthController {
   @Post('login')
   login(@Body() loginAuthDto: LoginAuthDto) {
     return this.authService.login(loginAuthDto);
+  }
+
+  @Get('navbar')
+  @UseGuards(JwtGuard)
+  getNavbarUser(@Req() req) {
+    return this.authService.getNavbarUser(req.user);
   }
 
   @Post('refresh')

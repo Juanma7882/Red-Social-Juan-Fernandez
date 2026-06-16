@@ -18,8 +18,8 @@ export class Login {
   showPassword = false;
 
   profileForm = new FormGroup({
-    username: new FormControl<string>('', [Validators.required, Validators.minLength(3), Validators.email]),
-    password: new FormControl<string>('', [Validators.required, Validators.minLength(8)]), // Cambiado a 8 para coincidir con tu template
+    username: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
+    password: new FormControl<string>('', [Validators.required, Validators.minLength(8)]),
   });
 
   get username() {
@@ -53,7 +53,7 @@ export class Login {
 
     try {
       const response = await this.nestAuthService.signIn({
-        user: this.username?.value || '',
+        identifier: this.username?.value || '',
         password: this.password?.value || '',
       });
 

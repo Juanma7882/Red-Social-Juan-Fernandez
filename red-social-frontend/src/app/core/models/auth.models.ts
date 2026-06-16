@@ -1,5 +1,5 @@
 export interface LoginAuth {
-  user: string;
+  identifier: string;
   password: string;
 }
 

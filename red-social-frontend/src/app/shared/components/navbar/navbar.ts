@@ -1,8 +1,9 @@
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
-
+import { NestAuthService } from '../../../core/services/nest.auth.service';
+import { effect } from '@angular/core';
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -11,19 +12,67 @@ import { Router } from '@angular/router';
   styleUrls: ['./navbar.css'],
 })
 export class Navbar {
+  nest = inject(NestAuthService);
   collapsed = signal(false);
   showCreate = signal(false);
   showMore = signal(false);
 
-  userAvatar = signal(
-    'https://purina.com.pe/sites/default/files/2022-10/Que_debes_saber_antes_de_adoptar_un_gatito.jpg',
-  );
+  userAvatar = signal<string | null>(null);
   msgBadge = signal(3);
   notiBadge = signal(12);
 
+  isAvatarLoading = signal<boolean>(false);
+  avatarError = signal<string | null>(null);
   createOptions = ['Publicación'];
 
   moreOptions = [{ icon: '', label: 'Configuración' }];
+
+  constructor() {
+    effect(() => {
+      if (this.nest.isAuthenticated()) {
+        this.getIcon();
+      } else {
+        this.userAvatar.set(null);
+      }
+    });
+    const saved = localStorage.getItem('sidebar-collapsed');
+    if (saved !== null) {
+      this.collapsed.set(saved === 'true');
+    }
+  }
+
+  ngOnInit() {
+    if (this.nest.isAuthenticated()) {
+      this.getIcon();
+    }
+  }
+
+  toggleCollapse() {
+    this.collapsed.update((v) => !v);
+    localStorage.setItem('sidebar-collapsed', String(this.collapsed()));
+  }
+
+  async getIcon() {
+    try {
+      this.isAvatarLoading.set(true);
+      this.avatarError.set(null);
+
+      const dataNavbar = await this.nest.userNavbar();
+      console.log('dataNavbar', dataNavbar);
+
+      const icon = dataNavbar.imagenPerfil;
+
+      this.userAvatar.set(icon);
+      console.log('icon', icon);
+    } catch (error) {
+      console.error('Error loading user avatar:', error);
+      this.avatarError.set('No se pudo cargar la imagen de perfil');
+      // Opcional: setear una imagen por defecto
+      this.userAvatar.set('/assets/default-avatar.png');
+    } finally {
+      this.isAvatarLoading.set(false);
+    }
+  }
 
   openCreate() {
     this.showCreate.set(true);
@@ -36,6 +85,9 @@ export class Navbar {
   }
   closeMore() {
     this.showMore.set(false);
+  }
+  salir() {
+    this.nest.logout();
   }
 
   @HostListener('window:keydown.escape')

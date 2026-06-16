@@ -60,6 +60,7 @@ export class NestAuthService {
       const data: AuthResponse = await response.json();
 
       if (data.token && data.user) {
+        this.clearAuth();
         this.setAuthData(data.token, data.user);
       }
 
@@ -78,7 +79,7 @@ export class NestAuthService {
     this._error.set(null);
 
     try {
-      const response = await fetch(`${this.apiUrl}/signup`, {
+      const response = await fetch(`${this.apiUrl}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,6 +95,7 @@ export class NestAuthService {
       const data: AuthResponse = await response.json();
 
       if (data.token && data.user) {
+        this.clearAuth();
         this.setAuthData(data.token, data.user);
       }
 
@@ -156,6 +158,24 @@ export class NestAuthService {
     localStorage.removeItem(this.userKey);
     this._token.set(null);
     this._user.set(null);
+  }
+
+  async userNavbar(): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/navbar`, {
+        method: 'GET',
+        headers: this.getAuthHeader(),
+      });
+      if (!response.ok) {
+        console.error(`Error ${response.status}: ${response.statusText}`);
+        return null;
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   logout(): void {
