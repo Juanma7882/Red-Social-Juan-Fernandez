@@ -1,5 +1,5 @@
 <article
-  class="w-full max-w-md mx-auto bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm dark:bg-gray-900 dark:border-gray-800"
+  class="w-full bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm dark:bg-gray-900 dark:border-gray-800"
 >
   <header class="flex items-center justify-between gap-3 px-4 py-3">
     <div class="flex items-center gap-2.5 min-w-0">
@@ -8,51 +8,117 @@
       >
         JF
       </div>
-      <span class="font-medium text-sm truncate">nombre de la cuenta</span>
+      <span class="font-medium text-sm truncate text-amber-50">{{ nombreUsuario }}</span>
     </div>
-    <time class="text-xs text-gray-500 flex-shrink-0 dark:text-gray-400">fecha de publicacion</time>
+    <time class="text-xs shrink-0 text-amber-50">{{ fechaDeCreacion }}</time>
   </header>
 
-  <h2 class="text-base font-medium px-4 pb-3">Titulo de la publicacion</h2>
+  <h2 class="text-base font-medium px-4 pb-3 text-amber-50">{{ titulo }}</h2>
 
   <!-- imagenes -->
   <div class="post-media w-full aspect-square sm:aspect-[4/3] bg-gray-100 dark:bg-gray-800">
     <img src="" alt="" loading="lazy" class="w-full h-full object-cover" />
   </div>
 
-  <footer class="post-actions flex items-center justify-between px-2 py-1.5">
-    <div class="actions-left flex items-center gap-1" role="group" aria-label="acciones de la publicacion">
+  <footer class="w-full post-actions flex items-center justify-between px-2 py-1.5">
+    <div class="w-full flex justify-around items-center gap-1" role="group" aria-label="acciones de la publicacion">
       <button
         type="button"
         aria-label="me gusta"
         class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
       >
-        <i class="ti ti-heart text-lg" aria-hidden="true">🎈</i>
-        <span class="text-sm hidden sm:inline">me gusta</span>
+        <i class="ti ti-heart text-lg" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-heart"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+          </svg>
+        </i>
+        <span class="text-sm hidden sm:inline">{{ meGusta }}</span>
       </button>
       <button
         type="button"
         aria-label="comentarios"
         class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
       >
-        <i class="ti ti-message-circle text-lg" aria-hidden="true"></i>
-        <span class="text-sm hidden sm:inline">comentarios</span>
+        <i class="ti ti-message-circle text-lg" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-message"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M8 9h8" />
+            <path d="M8 13h6" />
+            <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12" />
+          </svg>
+        </i>
+        <!-- <span class="text-sm hidden sm:inline">{{ comentarios }}</span> -->
       </button>
       <button
         type="button"
         aria-label="reenviar"
         class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
       >
-        <i class="ti ti-repeat text-lg" aria-hidden="true"></i>
-        <span class="text-sm hidden sm:inline">reenviar</span>
+        <i class="ti ti-repeat text-lg" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-brand-telegram"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" />
+          </svg>
+        </i>
+        <span class="text-sm hidden sm:inline"></span>
       </button>
       <button
         type="button"
         aria-label="compartir"
-        class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
+        class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800 flex-col"
       >
-        <i class="ti ti-share-3 text-lg" aria-hidden="true"></i>
-        <span class="text-sm hidden sm:inline">compartir</span>
+        <i class="ti ti-share-3 text-lg" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-share-3"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7" />
+          </svg>
+        </i>
+        <span class="text-sm hidden sm:inline"></span>
       </button>
     </div>
     <div class="actions-right">
@@ -66,13 +132,17 @@
     </div>
   </footer>
 
-  <p class="post-description text-sm leading-relaxed px-4 pb-4 text-gray-800 dark:text-gray-200">
-    descripcion primer renglon de la descripcion
+  <p
+    [class.expanded]="isExpanded"
+    class="description text-sm leading-relaxed px-4 pb-4 text-gray-800 dark:text-gray-200"
+  >
+    {{ descripcion }}
     <button
       type="button"
+      (click)="toggleDescription($event)"
       class="see-more text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 ml-1"
     >
-      ... ver mas
+      {{ isExpanded ? 'ver menos' : '... ver mas' }}
     </button>
   </p>
 </article>

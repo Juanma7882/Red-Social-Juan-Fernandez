@@ -15,7 +15,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import JwtPayload from 'src/auth/interfaces/jwt-payload.auth.interface';
 import { QueryPostDto } from './dto/quey-post.dto';
 
-@Controller('post')
+@Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

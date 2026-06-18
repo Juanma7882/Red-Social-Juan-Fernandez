@@ -62,12 +62,26 @@ export class PostService {
         };
     }
 
-    return this.postModel
-      .find(filters)
-      .populate('usuarioId', 'nombre apellido username imagenPerfil')
-      .sort(sort)
-      .skip(Number(offset))
-      .limit(Number(limit));
+    const limitNumber = Number(limit);
+    const offsetNumber = Number(offset);
+
+    const [posts, total] = await Promise.all([
+      this.postModel
+        .find(filters)
+        .populate('usuarioId', 'nombre apellido username imagenPerfil')
+        .sort(sort)
+        .skip(Number(offset))
+        .limit(Number(limit)),
+      this.postModel.countDocuments(filters),
+    ]);
+    const page = Math.floor(offsetNumber / limitNumber) + 1;
+    return {
+      data: posts,
+      total,
+      page,
+      limit: limitNumber,
+      totalPages: Math.ceil(total / limitNumber),
+    };
   }
 
   async findOne(id: string) {

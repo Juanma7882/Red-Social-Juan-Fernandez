@@ -1,7 +1,7 @@
 <form [formGroup]="newPosts" (ngSubmit)="uploadPost()">
   <div class="relative">
     <div
-      (click)="cancel()"
+      (click)="closeModal()"
       class="absolute h-10 w-10 rounded-full bg-red-800 -right-3 -top-3 flex items-center justify-center text-white cursor-pointer"
     >
       <p class="text-white">X</p>
@@ -70,7 +70,7 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1"
               stroke-linecap="round"
               stroke-linejoin="round"
             >
@@ -92,7 +92,7 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1"
               stroke-linecap="round"
               stroke-linejoin="round"
             >
@@ -107,13 +107,6 @@
         </div>
       </div>
     }
-
-    <!-- Preview de imagen -->
-    <!-- @if (previewImage()) {
-      <div class="post-media w-full aspect-square sm:aspect-[4/3] bg-gray-100 dark:bg-gray-800">
-        <img [src]="previewImage()" alt="Vista previa" loading="lazy" class="w-full h-full object-cover" />
-      </div>
-    } -->
 
     <footer class="post-actions flex items-center justify-between px-2 py-1.5">
       <div class="actions-left flex items-center gap-1" role="group" aria-label="acciones de la publicacion">
@@ -130,7 +123,7 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1"
               stroke-linecap="round"
               stroke-linejoin="round"
               class="icon icon-tabler icons-tabler-outline icon-tabler-heart"

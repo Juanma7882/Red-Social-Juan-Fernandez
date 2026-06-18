@@ -1,13 +1,14 @@
 import { Component, signal, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
 import { NestAuthService } from '../../../core/services/nest.auth.service';
 import { effect } from '@angular/core';
+import { CreatePosts } from '../create-posts/create-posts';
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, CreatePosts],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css'],
 })
@@ -16,11 +17,12 @@ export class Navbar {
   collapsed = signal(false);
   showCreate = signal(false);
   showMore = signal(false);
+  ModalCreatePosts = signal(false);
+  ModalCloseCreatePosts = signal(false);
 
   userAvatar = signal<string | null>(null);
   msgBadge = signal(3);
   notiBadge = signal(12);
-
   isAvatarLoading = signal<boolean>(false);
   avatarError = signal<string | null>(null);
   createOptions = ['Publicación'];
@@ -88,6 +90,16 @@ export class Navbar {
   }
   salir() {
     this.nest.logout();
+  }
+
+  showModalCreatePosts() {
+    this.showCreate.set(false);
+    this.ModalCreatePosts.set(true);
+  }
+
+  closeCreatePosts() {
+    this.ModalCloseCreatePosts.set(false);
+    this.ModalCreatePosts.set(false);
   }
 
   @HostListener('window:keydown.escape')

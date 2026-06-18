@@ -1,27 +1,15 @@
-// export class CreatePostDto {
-//   @IsNotEmpty({ message: 'El título es requerido' })
-//   @IsString({ message: 'El título debe ser un texto' })
-//   @MinLength(3, { message: 'El título debe tener al menos 3 caracteres' })
-//   @MaxLength(200, { message: 'El título no puede exceder los 200 caracteres' })
-//   titulo!: string;
-
-//   @IsNotEmpty({ message: 'El mensaje es requerido' })
-//   @IsString({ message: 'El mensaje debe ser un texto' })
-//   @MinLength(1, { message: 'El mensaje no puede estar vacío' })
-//   @MaxLength(5000, {
-//     message: 'El mensaje no puede exceder los 5000 caracteres',
-//   })
-//   mensaje!: string;
-
-//   @IsOptional()
-//   @IsString({ message: 'La imagen debe ser una URL o ruta válida' })
-//   imagen?: string;
-// }
-
 export interface CreatePostDto {
   titulo: string;
   mensaje: string;
   imagen?: string;
+}
+
+export interface responseCreatePostsDto {
+  type: string;
+  url: string;
+  redirected: boolean;
+  status: number;
+  ok: boolean;
 }
 
 export interface PostModel {
@@ -30,4 +18,48 @@ export interface PostModel {
   imagen?: string;
   comentarios: [];
   likes: [];
+}
+
+export interface PostModel {
+  data: Posts[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+export interface Posts {
+  _id: string;
+  usuarioId: UsuarioId;
+  titulo: string;
+  mensaje: string;
+  imagen: string;
+  likes: any[];
+  guardadosPor: any[];
+  compartidosCount: number;
+  eliminado: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface UsuarioId {
+  _id: string;
+  nombre: string;
+  apellido: string;
+  username: string;
+  imagenPerfil: string;
+}
+
+export interface QueryPostDto {
+  orderBy?: orderBy;
+  userId?: string;
+  limit?: string;
+  offset?: string;
+}
+
+export enum orderBy {
+  likes = 'likes',
+  guardados = 'guardados',
+  compartidos = 'compartidos',
+  fecha = 'fecha',
 }

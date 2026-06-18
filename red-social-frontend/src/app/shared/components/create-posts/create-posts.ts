@@ -1,8 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CloudinaryService } from '../../../core/services/cloudinary.service';
 import { NestPostsService } from '../../../core/services/nest.posts.service';
-import { CreatePostDto } from '../../../core/models/posts.models';
+import { CreatePostDto, responseCreatePostsDto } from '../../../core/models/posts.models';
 
 @Component({
   selector: 'app-create-posts',
@@ -11,6 +11,8 @@ import { CreatePostDto } from '../../../core/models/posts.models';
   styleUrl: './create-posts.css',
 })
 export class CreatePosts {
+  @Output() close = new EventEmitter<void>();
+
   private nestPostsService = inject(NestPostsService);
   private cloudinaryService = inject(CloudinaryService);
 
@@ -42,6 +44,7 @@ export class CreatePosts {
       reader.readAsDataURL(file);
 
       const imgUrl = await this.cloudinaryService.uploadImage(file);
+      console.log('imgUrl', imgUrl);
       this.newPosts.patchValue({ imagen: imgUrl });
 
       this.modalError.set('Imagen subida exitosamente');
@@ -64,14 +67,17 @@ export class CreatePosts {
       this.isLoading.set(true);
       const postData = this.newPosts.value;
 
-      const response = await this.nestPostsService.createPosts(postData as CreatePostDto);
-
+      const response = (await this.nestPostsService.createPosts(postData as CreatePostDto)) as { ok: boolean };
+      console.log('response', response);
       if (response.ok) {
         this.modalError.set('¡Publicación creada exitosamente!');
         this.newPosts.reset();
         this.previewImage.set('');
         this.selectedFile.set(null);
-        setTimeout(() => this.modalError.set(''), 3000);
+        setTimeout(() => {
+          this.modalError.set('');
+          this.closeModal();
+        }, 3000);
       } else {
         throw new Error('Error al crear la publicación');
       }
@@ -109,5 +115,10 @@ export class CreatePosts {
     return 'Usuario';
   }
 
-  cancel() {}
+  closeModal() {
+    this.close.emit();
+  }
+  cancel() {
+    this.closeModal();
+  }
 }
