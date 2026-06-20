@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NestAuthService } from '../../../core/services/nest.auth.service';
 import { Router, RouterLink } from '@angular/router';
@@ -13,9 +13,9 @@ export class Login {
   private nestAuthService = inject(NestAuthService);
   private router = inject(Router);
 
-  inValidCredential = false;
-  isLoading = false; // Añadido para mostrar estado de carga
-  showPassword = false;
+  inValidCredential = signal(false);
+  isLoading = signal(false);
+  showPassword = signal(false);
 
   profileForm = new FormGroup({
     username: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
@@ -31,7 +31,7 @@ export class Login {
   }
 
   togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
+    this.showPassword.set(!this.showPassword());
   }
 
   logInQuickly() {
@@ -42,14 +42,14 @@ export class Login {
   }
 
   async onSubmit() {
-    this.inValidCredential = false;
+    this.inValidCredential.set(false);
     this.profileForm.markAllAsTouched();
 
     if (this.profileForm.invalid) {
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     try {
       const response = await this.nestAuthService.signIn({
@@ -61,13 +61,13 @@ export class Login {
         console.log('Login exitoso');
         this.router.navigateByUrl('/');
       } else {
-        this.inValidCredential = true;
+        this.inValidCredential.set(true);
       }
     } catch (error) {
       console.error('Error en login:', error);
-      this.inValidCredential = true;
+      this.inValidCredential.set(true);
     } finally {
-      this.isLoading = false;
+      this.isLoading.set(true);
     }
   }
 }

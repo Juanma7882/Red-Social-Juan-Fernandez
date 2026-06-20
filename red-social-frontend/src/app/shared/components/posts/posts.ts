@@ -16,20 +16,15 @@ export class Posts {
   @Input() titulo = '';
   @Input() descripcion = '';
   @Input() imagen = '';
+  @Input() imagenPerfil = '';
 
+  @Input() comentarios = '';
   @Input() meGusta = '';
-  // @Input() comentarios = '';
 
   isExpanded = false;
 
   toggleDescription(event: Event) {
-    event.stopPropagation(); // Evita que el click se propague
+    event.stopPropagation();
     this.isExpanded = !this.isExpanded;
   }
-
-  // private postsService = inject(PostsService);
-  // posts = signal<PostModel[]>([]);
-  // constructor() {
-  //   this.postsService.getPosts().subscribe((data) => this.posts.set(data));
-  // }
 }

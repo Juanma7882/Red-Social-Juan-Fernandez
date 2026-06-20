@@ -4,16 +4,20 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Post } from './schemas/post.schema';
 import JwtPayload from 'src/auth/interfaces/jwt-payload.auth.interface';
 import { QueryPostDto } from './dto/quey-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
+import { Comment } from 'src/comments/schema/comment.schema';
+
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel(Post.name)
     private readonly postModel: Model<Post>,
+    @InjectModel(Comment.name)
+    private readonly commentModel: Model<Comment>,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: JwtPayload) {
@@ -24,66 +28,132 @@ export class PostService {
     });
   }
 
+  // async findAll(query: QueryPostDto) {
+  //   const { orderBy, limit, offset, userId } = query;
+
+  //   const filters: { eliminado: boolean; usuarioId?: string } = {
+  //     eliminado: false,
+  //   };
+
+  //   if (userId) {
+  //     filters.usuarioId = userId;
+  //   }
+
+  //   let sort = {};
+
+  //   switch (orderBy) {
+  //     case 'likes':
+  //       sort = {
+  //         likes: -1,
+  //       };
+  //       break;
+
+  //     case 'guardados':
+  //       sort = {
+  //         guardadosPor: -1,
+  //       };
+  //       break;
+
+  //     case 'compartidos':
+  //       sort = {
+  //         compartidosCount: -1,
+  //       };
+  //       break;
+
+  //     default:
+  //       sort = {
+  //         createdAt: -1,
+  //       };
+  //   }
+
+  //   const limitNumber = Number(limit);
+  //   const offsetNumber = Number(offset);
+
+  //   const [posts, total] = await Promise.all([
+  //     this.postModel
+  //       .find(filters)
+  //       .populate('usuarioId', 'nombre apellido username imagenPerfil')
+  //       .sort(sort)
+  //       .skip(Number(offset))
+  //       .limit(Number(limit)),
+  //     this.postModel.countDocuments(filters),
+  //   ]);
+  //   const page = Math.floor(offsetNumber / limitNumber) + 1;
+  //   return {
+  //     data: posts,
+  //     total,
+  //     page,
+  //     limit: limitNumber,
+  //     totalPages: Math.ceil(total / limitNumber),
+  //   };
+  // }
+
   async findAll(query: QueryPostDto) {
     const { orderBy, limit, offset, userId } = query;
+
+    const limitNumber = Number(limit);
+    const offsetNumber = Number(offset);
 
     const filters: { eliminado: boolean; usuarioId?: string } = {
       eliminado: false,
     };
+    if (userId) filters.usuarioId = userId;
 
-    if (userId) {
-      filters.usuarioId = userId;
-    }
-
-    let sort = {};
-
+    let sort: Record<string, 1 | -1> = { createdAt: -1 };
     switch (orderBy) {
       case 'likes':
-        sort = {
-          likes: -1,
-        };
+        sort = { likes: -1 };
         break;
-
       case 'guardados':
-        sort = {
-          guardadosPor: -1,
-        };
+        sort = { guardadosPor: -1 };
         break;
-
       case 'compartidos':
-        sort = {
-          compartidosCount: -1,
-        };
+        sort = { compartidosCount: -1 };
         break;
-
-      default:
-        sort = {
-          createdAt: -1,
-        };
     }
-
-    const limitNumber = Number(limit);
-    const offsetNumber = Number(offset);
 
     const [posts, total] = await Promise.all([
       this.postModel
         .find(filters)
         .populate('usuarioId', 'nombre apellido username imagenPerfil')
         .sort(sort)
-        .skip(Number(offset))
-        .limit(Number(limit)),
+        .skip(offsetNumber)
+        .limit(limitNumber)
+        .lean(), // ← lean() para poder agregarle commentCount
       this.postModel.countDocuments(filters),
     ]);
+
+    // Contar comentarios de cada post en un solo aggregate
+    const postIds = posts.map((p) => p._id);
+    const commentCounts = await this.commentModel.aggregate<{
+      _id: Types.ObjectId;
+      count: number;
+    }>([
+      { $match: { postId: { $in: postIds }, eliminado: false } },
+      { $group: { _id: '$postId', count: { $sum: 1 } } },
+    ]);
+
+    // Mapear counts a un objeto para lookup O(1)
+    const countMap = new Map(
+      commentCounts.map((c) => [c._id.toString(), c.count]),
+    );
+
+    // Agregar commentCount a cada post
+    const data = posts.map((post) => ({
+      ...post,
+      commentCount: countMap.get(post._id.toString()) ?? 0,
+    }));
+
     const page = Math.floor(offsetNumber / limitNumber) + 1;
+
     return {
-      data: posts,
+      data,
       total,
       page,
       limit: limitNumber,
       totalPages: Math.ceil(total / limitNumber),
     };
   }
-
   async findOne(id: string) {
     const post = await this.postModel
       .findOne({

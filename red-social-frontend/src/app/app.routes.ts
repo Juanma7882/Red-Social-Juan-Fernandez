@@ -11,10 +11,12 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./features/home/home').then((m) => m.Home),
+        canActivate: [authGuard],
       },
       {
         path: 'home',
         loadComponent: () => import('./features/home/home').then((m) => m.Home),
+        canActivate: [authGuard],
       },
       {
         path: 'auth',
@@ -23,10 +25,12 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
+        canActivate: [authGuard],
       },
       {
         path: '**',
         loadComponent: () => import('./features/home/home').then((m) => m.Home),
+        canActivate: [authGuard],
       },
     ],
   },

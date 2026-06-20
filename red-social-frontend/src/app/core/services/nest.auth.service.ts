@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { AuthResponse, LoginAuth, SignUpAuth, User } from '../models/auth.models';
+import { environment } from '../../../environments/environment';
+import { AuthResponse, LoginAuth, MyProfile, SignUpAuth, User } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +60,7 @@ export class NestAuthService {
       const data: AuthResponse = await response.json();
 
       if (data.token && data.user) {
+        console.log('data', data);
         this.clearAuth();
         this.setAuthData(data.token, data.user);
       }
@@ -75,9 +76,7 @@ export class NestAuthService {
   }
 
   async signUp(userData: SignUpAuth): Promise<AuthResponse> {
-    this._loading.set(true);
-    this._error.set(null);
-
+    this.clearAuth();
     try {
       const response = await fetch(`${this.apiUrl}/register`, {
         method: 'POST',
@@ -95,7 +94,6 @@ export class NestAuthService {
       const data: AuthResponse = await response.json();
 
       if (data.token && data.user) {
-        this.clearAuth();
         this.setAuthData(data.token, data.user);
       }
 
@@ -114,13 +112,12 @@ export class NestAuthService {
     if (!token) return false;
 
     try {
-      const response = await fetch(`${this.apiUrl}/validate`, {
-        method: 'GET',
+      const response = await fetch(`${this.apiUrl}/authorize`, {
+        method: 'POST',
         headers: this.getAuthHeader(),
       });
 
       if (response.ok) {
-        // Opcional: Actualizar datos del usuario si el backend devuelve info fresca
         const data = await response.json();
         if (data.user) {
           this.updateUser(data.user);
@@ -143,6 +140,21 @@ export class NestAuthService {
       const updatedUser = { ...currentUser, ...user };
       this._user.set(updatedUser);
       localStorage.setItem(this.userKey, JSON.stringify(updatedUser));
+    }
+  }
+
+  async getMyUserProfile(): Promise<MyProfile> {
+    try {
+      const response = await fetch(`${this.apiUrl}/profile`, {
+        method: 'GET',
+        headers: this.getAuthHeader(),
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   }
 
@@ -193,6 +205,7 @@ export class NestAuthService {
   }
 
   async authenticatedFetch(url: string, options: RequestInit = {}): Promise<Response> {
+    console.log('url', url);
     const headers = {
       ...options.headers,
       ...this.getAuthHeader(),

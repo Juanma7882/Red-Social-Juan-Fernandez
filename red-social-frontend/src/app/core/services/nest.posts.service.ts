@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { NestAuthService } from './nest.auth.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { CreatePostDto, PostModel, QueryPostDto } from '../models/posts.models';
 
 @Injectable({

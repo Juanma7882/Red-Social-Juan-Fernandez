@@ -126,4 +126,29 @@ export class AuthService {
       throw new UnauthorizedException('Usuario no encontrado');
     }
   }
+
+  async getMyUserProfile(user: JwtPayload) {
+    try {
+      const dbUser = await this.usersService.findOne(user.sub);
+      if (dbUser === null) {
+        throw new UnauthorizedException('Usuario no encontrado');
+      }
+      return {
+        nombre: dbUser.nombre,
+        apellido: dbUser.apellido,
+        email: dbUser.email,
+        username: dbUser.username,
+        fechaNacimiento: dbUser.fechaNacimiento,
+        descripcion: dbUser.descripcion,
+        imagenPerfil: dbUser.imagenPerfil,
+        createdAt: (dbUser as { createdAt?: Date | string }).createdAt,
+      };
+    } catch (error) {
+      console.log(error);
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Usuario no encontrado');
+    }
+  }
 }

@@ -1,44 +1,25 @@
-<section class="w-full justify-start items-center flex pt-6 flex-col gap-4 bg-amber-600">
-  <!-- Loading State -->
-  @if (isLoading()) {
-    <div class="text-center py-4">Loading posts...</div>
-  }
-
-  <!-- Posts List -->
-  @if (!isLoading()) {
-    @for (post of postsList(); track post._id) {
-      <app-posts
-        class="w-full sm:w-2/3 md:w-2/3 lg:w-2/4"
-        [nombreUsuario]="post.usuarioId.username"
-        [fechaDeCreacion]="post.createdAt"
-        [titulo]="post.titulo"
-        [descripcion]="post.mensaje"
-        [imagen]="post.imagen"
-        [meGusta]="post.likes.length.toString()"
-      ></app-posts>
-    } @empty {
+<section class="w-full justify-start items-center flex pt-6 flex-col gap-4 bg-slate-950">
+  @for (post of postsList(); track post._id) {
+    <app-posts
+      class="w-full sm:w-2/3 md:w-2/3 lg:w-2/4"
+      [nombreUsuario]="post.usuarioId.username"
+      [fechaDeCreacion]="post.createdAt"
+      [titulo]="post.titulo"
+      [imagenPerfil]="post.usuarioId.imagenPerfil"
+      [descripcion]="post.mensaje"
+      [imagen]="post.imagen"
+      [meGusta]="post.likes.length.toString()"
+      [comentarios]="post.commentCount.toString()"
+    />
+  } @empty {
+    @if (!isLoading()) {
       <div class="text-center py-4 text-gray-500">No posts available</div>
     }
   }
 
-  <!-- Pagination Controls -->
-  @if (!isLoading() && postsList().length > 0) {
-    <div class="flex gap-4 mt-4">
-      <button
-        (click)="previousPage()"
-        [disabled]="!canGoPrevious"
-        class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-      >
-        Previous
-      </button>
-      <span class="py-2">Page {{ currentPage }} of {{ totalPages }}</span>
-      <button
-        (click)="nextPage()"
-        [disabled]="!canGoNext"
-        class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-      >
-        Next
-      </button>
-    </div>
+  @if (isLoading()) {
+    <div class="py-4">Loading more posts...</div>
   }
+
+  <div #loadMoreTrigger class="h-10"></div>
 </section>

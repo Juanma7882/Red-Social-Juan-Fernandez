@@ -40,6 +40,7 @@ export interface Posts {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  commentCount: number;
 }
 
 export interface UsuarioId {

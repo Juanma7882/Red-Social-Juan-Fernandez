@@ -34,3 +34,14 @@ export interface User {
   updatedAt: string;
   __v: number;
 }
+
+export interface MyProfile {
+  nombre: string;
+  apellido: string;
+  email: string;
+  username: string;
+  fechaNacimiento: string;
+  descripcion: string;
+  imagenPerfil: string;
+  createdAt: string;
+}

@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtGuard } from './guards/jwt.guard';
+// removed accidental import of `get` from 'http' which conflicted with Nest's @Get decorator
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +33,12 @@ export class AuthController {
   @UseGuards(JwtGuard)
   getNavbarUser(@Req() req) {
     return this.authService.getNavbarUser(req.user);
+  }
+
+  @Get('profile')
+  @UseGuards(JwtGuard)
+  getMyUserProfile(@Req() req) {
+    return this.authService.getMyUserProfile(req.user);
   }
 
   @Post('refresh')
