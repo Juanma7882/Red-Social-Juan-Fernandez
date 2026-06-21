@@ -1,14 +1,21 @@
 import { Component, Inject, signal } from '@angular/core';
 import { NestAuthService } from '../../core/services/nest.auth.service';
+import { NestPostsService } from '../../core/services/nest.posts.service';
+import { SIGNAL } from '@angular/core/primitives/signals';
+import { orderBy, PostModel } from '../../core/models/posts.models';
+import { Posts } from '../../shared/components/posts/posts';
 
 @Component({
   selector: 'app-profile',
-  imports: [],
+  imports: [Posts],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
 export class Profile {
-  constructor(@Inject(NestAuthService) private nestAuthService: NestAuthService) {}
+  constructor(
+    @Inject(NestAuthService) private nestAuthService: NestAuthService,
+    private nestPostsService: NestPostsService,
+  ) {}
 
   nombre = signal('');
   apellido = signal('');
@@ -19,8 +26,21 @@ export class Profile {
   imagenPerfil = signal('');
   createdAt = signal('');
 
+  orderByOptions: orderBy[] = Object.values(orderBy);
+  currentlyOrderBy = signal<orderBy>(orderBy.fecha);
+  userId = signal('');
+  offset = signal(0);
+  limit = signal(3);
+
+  posts = signal<PostModel | null>(null);
+
   ngOnInit() {
+    const id = this.nestAuthService.currentUser()?._id;
+    if (id) this.userId.set(id);
     this.dataProfile();
+    if (id) {
+      this.postsProfile();
+    }
   }
 
   async dataProfile() {
@@ -39,5 +59,17 @@ export class Profile {
       console.log(error);
     }
   }
-  async postsProfile() {}
+  async postsProfile() {
+    try {
+      const response = await this.nestPostsService.getPosts({
+        userId: this.userId(),
+        orderBy: this.currentlyOrderBy(),
+        limit: String(this.limit()),
+        offset: String(this.offset()),
+      });
+      if (!(response instanceof Error)) this.posts.set(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

@@ -28,66 +28,6 @@ export class PostService {
     });
   }
 
-  // async findAll(query: QueryPostDto) {
-  //   const { orderBy, limit, offset, userId } = query;
-
-  //   const filters: { eliminado: boolean; usuarioId?: string } = {
-  //     eliminado: false,
-  //   };
-
-  //   if (userId) {
-  //     filters.usuarioId = userId;
-  //   }
-
-  //   let sort = {};
-
-  //   switch (orderBy) {
-  //     case 'likes':
-  //       sort = {
-  //         likes: -1,
-  //       };
-  //       break;
-
-  //     case 'guardados':
-  //       sort = {
-  //         guardadosPor: -1,
-  //       };
-  //       break;
-
-  //     case 'compartidos':
-  //       sort = {
-  //         compartidosCount: -1,
-  //       };
-  //       break;
-
-  //     default:
-  //       sort = {
-  //         createdAt: -1,
-  //       };
-  //   }
-
-  //   const limitNumber = Number(limit);
-  //   const offsetNumber = Number(offset);
-
-  //   const [posts, total] = await Promise.all([
-  //     this.postModel
-  //       .find(filters)
-  //       .populate('usuarioId', 'nombre apellido username imagenPerfil')
-  //       .sort(sort)
-  //       .skip(Number(offset))
-  //       .limit(Number(limit)),
-  //     this.postModel.countDocuments(filters),
-  //   ]);
-  //   const page = Math.floor(offsetNumber / limitNumber) + 1;
-  //   return {
-  //     data: posts,
-  //     total,
-  //     page,
-  //     limit: limitNumber,
-  //     totalPages: Math.ceil(total / limitNumber),
-  //   };
-  // }
-
   async findAll(query: QueryPostDto) {
     const { orderBy, limit, offset, userId } = query;
 

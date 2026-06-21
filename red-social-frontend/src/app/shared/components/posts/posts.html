@@ -178,17 +178,22 @@
     </div>
   </footer>
 
-  <p
-    [class.expanded]="isExpanded"
-    class="description text-sm leading-relaxed px-4 pb-4 text-gray-800 dark:text-gray-200"
-  >
-    {{ descripcion }}
-    <button
-      type="button"
-      (click)="toggleDescription($event)"
-      class="see-more text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 ml-1"
+  <div class="px-4 pb-4">
+    <p
+      #desc
+      class="text-sm leading-relaxed text-gray-800 dark:text-gray-200"
+      [class.line-clamp-2]="!isExpanded"
     >
-      {{ isExpanded ? 'ver menos' : '... ver mas' }}
-    </button>
-  </p>
+      {{ descripcion }}
+    </p>
+    @if (showVerMas) {
+      <button
+        type="button"
+        (click)="toggleDescription($event)"
+        class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mt-1"
+      >
+        {{ isExpanded ? 'ver menos' : 'ver más' }}
+      </button>
+    }
+  </div>
 </article>

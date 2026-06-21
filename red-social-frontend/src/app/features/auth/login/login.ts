@@ -66,8 +66,7 @@ export class Login {
     } catch (error) {
       console.error('Error en login:', error);
       this.inValidCredential.set(true);
-    } finally {
-      this.isLoading.set(true);
+      this.isLoading.set(false);
     }
   }
 }

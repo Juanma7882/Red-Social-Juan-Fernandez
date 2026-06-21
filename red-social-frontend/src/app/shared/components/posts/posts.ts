@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-posts',
@@ -6,7 +6,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
   templateUrl: './posts.html',
   styleUrl: './posts.css',
 })
-export class Posts {
+export class Posts implements AfterViewInit, OnChanges {
   @Input() id = '';
 
   @Input() nombreUsuario = '';
@@ -26,8 +26,26 @@ export class Posts {
   @Output() meGustaToggled = new EventEmitter<string>();
   @Output() deletePost = new EventEmitter<string>();
 
+  @ViewChild('desc') descEl!: ElementRef<HTMLParagraphElement>;
+
   isExpanded = false;
   isMenuOpen = false;
+  showVerMas = false;
+
+  ngAfterViewInit() {
+    this.checkOverflow();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['descripcion']) {
+      setTimeout(() => this.checkOverflow());
+    }
+  }
+
+  private checkOverflow() {
+    const el = this.descEl?.nativeElement;
+    if (el) this.showVerMas = el.scrollHeight > el.clientHeight;
+  }
 
   toggleDescription(event: Event) {
     event.stopPropagation();

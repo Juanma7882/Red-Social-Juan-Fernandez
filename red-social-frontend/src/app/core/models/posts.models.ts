@@ -12,7 +12,7 @@ export interface responseCreatePostsDto {
   ok: boolean;
 }
 
-export interface PostModel {
+export interface Post {
   titulo: string;
   mensaje: string;
   imagen?: string;
