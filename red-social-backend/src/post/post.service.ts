@@ -6,10 +6,12 @@ import {
 import { CreatePostDto } from './dto/create-post.dto';
 import { Model, Types } from 'mongoose';
 import { Post } from './schemas/post.schema';
-import JwtPayload from 'src/auth/interfaces/jwt-payload.auth.interface';
+// import JwtPayload from 'src/auth/interfaces/jwt-payload.auth.interface';
+import JwtPayload from '../auth/interfaces/jwt-payload.auth.interface';
 import { QueryPostDto } from './dto/quey-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Comment } from 'src/comments/schema/comment.schema';
+// import { Comment } from 'src/comments/schema/comment.schema';
+import { Comment } from '../comments/schema/comment.schema';
 
 @Injectable()
 export class PostService {
