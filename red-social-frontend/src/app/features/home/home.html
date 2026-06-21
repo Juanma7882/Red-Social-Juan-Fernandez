@@ -1,7 +1,24 @@
 <section class="w-full justify-start items-center flex pt-6 flex-col gap-4 bg-slate-950">
+  <!-- Selector de orden -->
+  <div class="w-full sm:w-2/3 md:w-2/3 lg:w-2/4 bg-amber-200 p-4 rounded-t-lg flex justify-between items-center">
+    <label for="orderSelect" class="text-slate-950 font-medium">Ordenar por:</label>
+    <select
+      id="orderSelect"
+      (change)="onOrderChange($event)"
+      class="bg-slate-800 text-white px-3 py-2 rounded-md border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-200"
+    >
+      <option value="{{ orderBy.fecha }}">Fecha</option>
+      <option value="{{ orderBy.likes }}">Likes</option>
+      <option value="{{ orderBy.guardados }}">Guardados</option>
+      <option value="{{ orderBy.compartidos }}">Compartidos</option>
+    </select>
+  </div>
+  <div class="bg-amber-200 w-full h-0.5"></div>
+  <!-- Posts -->
   @for (post of postsList(); track post._id) {
     <app-posts
       class="w-full sm:w-2/3 md:w-2/3 lg:w-2/4"
+      [id]="post._id"
       [nombreUsuario]="post.usuarioId.username"
       [fechaDeCreacion]="post.createdAt"
       [titulo]="post.titulo"
@@ -10,6 +27,10 @@
       [imagen]="post.imagen"
       [meGusta]="post.likes.length.toString()"
       [comentarios]="post.commentCount.toString()"
+      (meGustaToggled)="handleLike($event)"
+      (deletePost)="handleDelete($event)"
+      [isLiked]="post.isLiked || false"
+      [canDelete]="post.canDelete || false"
     />
   } @empty {
     @if (!isLoading()) {

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
 import { Posts as PostsComponent } from '../../shared/components/posts/posts';
 import { NestPostsService } from '../../core/services/nest.posts.service';
+import { NestAuthService } from '../../core/services/nest.auth.service';
 import { orderBy, Posts as PostModel } from '../../core/models/posts.models';
 
 @Component({
@@ -10,7 +11,8 @@ import { orderBy, Posts as PostModel } from '../../core/models/posts.models';
   styleUrl: './home.css',
 })
 export class Home implements OnInit, AfterViewInit {
-  private readonly listOrder: orderBy[] = [orderBy.fecha, orderBy.likes, orderBy.guardados, orderBy.compartidos];
+  readonly orderBy = orderBy;
+  readonly listOrder: orderBy[] = [orderBy.fecha, orderBy.likes, orderBy.guardados, orderBy.compartidos];
   private currentOrder = this.listOrder[0];
   private offset: number = 0;
   private limit: number = 2;
@@ -25,7 +27,10 @@ export class Home implements OnInit, AfterViewInit {
   private observer!: IntersectionObserver;
   private isFetching = false;
 
-  constructor(private nestPostService: NestPostsService) {}
+  constructor(
+    private nestPostService: NestPostsService,
+    private authService: NestAuthService,
+  ) {}
 
   ngOnInit() {
     this.getPosts();
@@ -69,16 +74,25 @@ export class Home implements OnInit, AfterViewInit {
         limit: this.limit.toString(),
         orderBy: this.currentOrder,
       });
-
+      console.log(posts);
       if (posts instanceof Error) {
         console.error(posts);
         return;
       }
 
+      const currentUserId = this.authService.currentUser()?._id;
+      const userRole = this.authService.userRole();
+      const isAdmin = userRole === 'administrador';
+      const postsWithLiked = posts.data.map((post) => ({
+        ...post,
+        isLiked: currentUserId ? post.likes.some((id: any) => id.toString() === currentUserId) : false,
+        canDelete: isAdmin || (!!currentUserId && post.usuarioId._id === currentUserId),
+      }));
+
       if (resetPosts) {
-        this.postsList.set(posts.data);
+        this.postsList.set(postsWithLiked);
       } else {
-        this.postsList.update((currentPosts) => [...currentPosts, ...posts.data]);
+        this.postsList.update((currentPosts) => [...currentPosts, ...postsWithLiked]);
       }
 
       this.totalPages = posts.totalPages;
@@ -107,6 +121,47 @@ export class Home implements OnInit, AfterViewInit {
     await this.getPosts(true);
   }
 
+  async handleLike(postId: string): Promise<void> {
+    const postIndex = this.postsList().findIndex((p) => p._id === postId);
+    if (postIndex === -1) return;
+
+    const post = this.postsList()[postIndex];
+    const isCurrentlyLiked = post.isLiked || false;
+    const currentUserId = this.authService.currentUser()?._id || '';
+
+    try {
+      if (isCurrentlyLiked) {
+        await this.nestPostService.unlikePost(postId);
+      } else {
+        await this.nestPostService.likePost(postId);
+      }
+
+      this.postsList.update((posts) => {
+        const updatedPosts = [...posts];
+        const updatedLikes = isCurrentlyLiked
+          ? updatedPosts[postIndex].likes.filter((id: any) => id.toString() !== currentUserId)
+          : [...updatedPosts[postIndex].likes, currentUserId];
+        updatedPosts[postIndex] = {
+          ...updatedPosts[postIndex],
+          isLiked: !isCurrentlyLiked,
+          likes: updatedLikes,
+        };
+        return updatedPosts;
+      });
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  }
+
+  async handleDelete(postId: string): Promise<void> {
+    try {
+      await this.nestPostService.deletePosts(postId);
+      this.postsList.update((posts) => posts.filter((p) => p._id !== postId));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  }
+
   get order(): orderBy {
     return this.currentOrder;
   }
@@ -117,5 +172,17 @@ export class Home implements OnInit, AfterViewInit {
 
   get canGoPrevious(): boolean {
     return this.currentPage > 1;
+  }
+
+  async onOrderChange(event: Event): Promise<void> {
+    const select = event.target as HTMLSelectElement;
+    const selectedOrder = select.value as orderBy;
+
+    if (this.currentOrder === selectedOrder) return;
+
+    this.currentOrder = selectedOrder;
+    this.offset = 0;
+    this.currentPage = 1;
+    await this.getPosts(true);
   }
 }

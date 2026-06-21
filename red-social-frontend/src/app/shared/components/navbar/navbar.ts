@@ -90,6 +90,7 @@ export class Navbar {
   }
   salir() {
     this.nest.logout();
+    window.location.reload();
   }
 
   showModalCreatePosts() {

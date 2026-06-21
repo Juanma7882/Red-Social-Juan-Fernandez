@@ -28,7 +28,7 @@ export interface User {
   fechaNacimiento: string;
   descripcion: string;
   imagenPerfil: string;
-  perfil: 'usuario' | 'admin'; // Tipo específico
+  perfil: 'usuario' | 'administrador';
   habilitado: boolean;
   createdAt: string;
   updatedAt: string;

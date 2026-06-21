@@ -10,7 +10,32 @@
       </div>
       <span class="font-medium text-sm truncate text-amber-50">{{ nombreUsuario }}</span>
     </div>
-    <time class="text-xs shrink-0 text-amber-50">{{ fechaDeCreacion }}</time>
+    <div class="flex flex-col items-end gap-2">
+      @if (canDelete) {
+        <div class="relative">
+          <button
+            type="button"
+            (click)="toggleMenu($event)"
+            class="text-amber-200 hover:text-amber-100 px-1 rounded transition leading-none text-xl font-bold"
+            aria-label="opciones"
+          >
+            ···
+          </button>
+          @if (isMenuOpen) {
+            <div class="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-32.5 dark:bg-gray-800 dark:border-gray-700">
+              <button
+                type="button"
+                (click)="onDeleteClick($event)"
+                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg dark:text-red-400 dark:hover:bg-red-900/20"
+              >
+                Eliminar
+              </button>
+            </div>
+          }
+        </div>
+      }
+      <time class="text-xs shrink-0 text-amber-50">{{ fechaDeCreacion }}</time>
+    </div>
   </header>
 
   <h2 class="text-base font-medium px-4 pb-3 text-amber-50">{{ titulo }}</h2>
@@ -24,10 +49,32 @@
     <div class="w-full flex justify-around items-center gap-1" role="group" aria-label="acciones de la publicacion">
       <button
         type="button"
+        (click)="onLikeClick($event)"
         aria-label="me gusta"
-        class="flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800"
+        [class]="
+          isLiked
+            ? 'flex items-center gap-1.5 px-2.5 py-2 rounded-md text-red-500 hover:bg-red-50 active:scale-95 transition dark:text-red-400 dark:hover:bg-red-900/20'
+            : 'flex items-center gap-1.5 px-2.5 py-2 rounded-md text-gray-600 hover:bg-gray-100 active:scale-95 transition dark:text-gray-300 dark:hover:bg-gray-800'
+        "
       >
-        <i class="ti ti-heart text-lg" aria-hidden="true">
+        @if (isLiked) {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 .927 -9.215z"
+            />
+          </svg>
+        } @else {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -38,12 +85,11 @@
             stroke-width="1"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="icon icon-tabler icons-tabler-outline icon-tabler-heart"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
           </svg>
-        </i>
+        }
         <span class="text-sm hidden sm:inline">{{ meGusta }}</span>
       </button>
       <button

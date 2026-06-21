@@ -34,6 +34,8 @@ export interface Posts {
   mensaje: string;
   imagen: string;
   likes: any[];
+  isLiked?: boolean;
+  canDelete?: boolean;
   guardadosPor: any[];
   compartidosCount: number;
   eliminado: boolean;

@@ -35,7 +35,6 @@ export class Profile {
       this.imagenPerfil.set(profile.imagenPerfil);
       this.createdAt.set(profile.createdAt);
       console.log('profile', profile);
-      
     } catch (error) {
       console.log(error);
     }
