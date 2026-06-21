@@ -1,0 +1,19 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-white gap-6">
+  <img src="/iconApp.png" alt="Cargando..." class="w-20 h-20 animate-spin" style="animation-duration: 1.5s" />
+
+  @if (currentlyStatus() === 'success') {
+    <p class="text-green-600 font-semibold text-base">✓ Login exitoso</p>
+  } @else if (currentlyStatus() === 'error') {
+    <p class="text-red-500 font-semibold text-base">✗ Asegúrese de colocar sus credenciales correctamente</p>
+  } @else {
+    <p class="text-gray-400 text-sm tracking-wide">Cargando...</p>
+  }
+
+  <div class="w-64 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+    @if (currentlyStatus() === 'error') {
+      <div class="h-full bg-red-500 rounded-full progress-fill"></div>
+    } @else {
+      <div class="h-full bg-green-500 rounded-full progress-fill"></div>
+    }
+  </div>
+</div>

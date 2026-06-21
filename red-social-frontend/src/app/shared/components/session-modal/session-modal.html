@@ -1,0 +1,42 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4 flex flex-col gap-6">
+    <div class="flex flex-col gap-2 text-center">
+      <span class="text-4xl">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-alarm-minus"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M5 13a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+          <path d="M7 4l-2.75 2" />
+          <path d="M17 4l2.75 2" />
+          <path d="M10 13h4" />
+        </svg>
+      </span>
+      <h2 class="text-xl font-bold text-gray-900">Sesión por vencer</h2>
+      <p class="text-gray-600 text-sm">Tu sesión está a punto de expirar. ¿Deseas renovarla por otros 15 minutos?</p>
+    </div>
+    <div class="flex flex-col gap-3">
+      <button
+        (click)="renew()"
+        class="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-2.5 rounded-xl transition-all duration-150"
+      >
+        Sí, renovar sesión
+      </button>
+      <button
+        (click)="dismiss()"
+        class="w-full bg-gray-100 hover:bg-gray-200 active:scale-95 text-gray-700 font-semibold py-2.5 rounded-xl transition-all duration-150"
+      >
+        No, cerrar sesión
+      </button>
+    </div>
+  </div>
+</div>

@@ -10,17 +10,25 @@ export class NestAuthService {
   private readonly tokenKey = 'auth_token';
   private readonly userKey = 'auth_user';
 
+  private readonly tokenIssuedKey = 'auth_token_issued';
+  private readonly SESSION_WARNING_MS = 10 * 60 * 1000;
+  private readonly SESSION_TOTAL_MS = 15 * 60 * 1000;
+  private sessionTimerId: ReturnType<typeof setTimeout> | null = null;
+  private autoLogoutTimerId: ReturnType<typeof setTimeout> | null = null;
+
   // Signals for state management
   private _token = signal<string | null>(null);
   private _user = signal<User | null>(null);
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
+  private _showSessionModal = signal<boolean>(false);
 
   public isAuthenticated = computed(() => !!this._token());
   public currentUser = computed(() => this._user());
   public isLoading = computed(() => this._loading());
   public authError = computed(() => this._error());
   public userRole = computed(() => this._user()?.perfil ?? null);
+  public showSessionModal = this._showSessionModal.asReadonly();
 
   constructor() {
     this.loadStorageAuth();
@@ -33,11 +41,97 @@ export class NestAuthService {
       try {
         this._token.set(token);
         this._user.set(JSON.parse(userStr));
+        this.resumeSessionTimer();
       } catch (error) {
         console.error('Error loading stored auth:', error);
         this.clearAuth();
       }
     }
+  }
+
+  private startSessionTimer(): void {
+    this.clearSessionTimer();
+    this.clearAutoLogoutTimer();
+    localStorage.setItem(this.tokenIssuedKey, Date.now().toString());
+    this.sessionTimerId = setTimeout(() => {
+      this._showSessionModal.set(true);
+      this.scheduleAutoLogout(this.SESSION_TOTAL_MS - this.SESSION_WARNING_MS);
+    }, this.SESSION_WARNING_MS);
+  }
+
+  private resumeSessionTimer(): void {
+    const issued = localStorage.getItem(this.tokenIssuedKey);
+    if (!issued) {
+      this.startSessionTimer();
+      return;
+    }
+    const elapsed = Date.now() - Number(issued);
+    if (elapsed >= this.SESSION_TOTAL_MS) {
+      this.clearAuth();
+      window.location.reload();
+      return;
+    }
+    const remainingWarning = this.SESSION_WARNING_MS - elapsed;
+    if (remainingWarning <= 0) {
+      this._showSessionModal.set(true);
+      const remainingLogout = this.SESSION_TOTAL_MS - elapsed;
+      this.scheduleAutoLogout(remainingLogout);
+    } else {
+      this.clearSessionTimer();
+      this.sessionTimerId = setTimeout(() => {
+        this._showSessionModal.set(true);
+        this.scheduleAutoLogout(this.SESSION_TOTAL_MS - this.SESSION_WARNING_MS);
+      }, remainingWarning);
+    }
+  }
+
+  private scheduleAutoLogout(delayMs: number): void {
+    this.clearAutoLogoutTimer();
+    this.autoLogoutTimerId = setTimeout(() => {
+      this.clearAuth();
+      window.location.reload();
+    }, delayMs);
+  }
+
+  private clearSessionTimer(): void {
+    if (this.sessionTimerId !== null) {
+      clearTimeout(this.sessionTimerId);
+      this.sessionTimerId = null;
+    }
+  }
+
+  private clearAutoLogoutTimer(): void {
+    if (this.autoLogoutTimerId !== null) {
+      clearTimeout(this.autoLogoutTimerId);
+      this.autoLogoutTimerId = null;
+    }
+  }
+
+  async renewSession(): Promise<void> {
+    try {
+      const response = await this.authenticatedFetch(`${this.apiUrl}/refresh`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem(this.tokenKey, data.token);
+        this._token.set(data.token);
+        this._showSessionModal.set(false);
+        this.startSessionTimer();
+      }
+    } catch {
+      this.logout();
+    }
+  }
+
+  hideSessionModal(): void {
+    this._showSessionModal.set(false);
+  }
+
+  dismissSession(): void {
+    this.clearAutoLogoutTimer();
+    this.clearAuth();
+    window.location.reload();
   }
 
   async signIn(loginAuth: LoginAuth): Promise<AuthResponse> {
@@ -163,13 +257,18 @@ export class NestAuthService {
     localStorage.setItem(this.userKey, JSON.stringify(user));
     this._token.set(token);
     this._user.set(user);
+    this.startSessionTimer();
   }
 
   private clearAuth(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.tokenIssuedKey);
     this._token.set(null);
     this._user.set(null);
+    this._showSessionModal.set(false);
+    this.clearSessionTimer();
+    this.clearAutoLogoutTimer();
   }
 
   async userNavbar(): Promise<any> {

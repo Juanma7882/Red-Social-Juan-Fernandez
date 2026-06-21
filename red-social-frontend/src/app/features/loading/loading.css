@@ -1,0 +1,12 @@
+@keyframes fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.progress-fill {
+  animation: fill 4s linear forwards;
+}

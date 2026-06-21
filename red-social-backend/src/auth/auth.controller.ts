@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -41,9 +31,10 @@ export class AuthController {
     return this.authService.getMyUserProfile(req.user);
   }
 
+  @UseGuards(JwtGuard)
   @Post('refresh')
-  refresh(@Body() user: any) {
-    return this.authService.refresh(user);
+  refresh(@Req() req) {
+    return this.authService.refresh(req.user);
   }
 
   @UseGuards(JwtGuard)

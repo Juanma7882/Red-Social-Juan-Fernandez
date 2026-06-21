@@ -1,18 +1,17 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from './core/layouts/main-layouts';
 import { authGuard } from './core/guards/auth.guard';
-import { noAuthGuard } from './core/guards/no-auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    loadComponent: () => import('./features/loading/loading').then((m) => m.Loading),
+  },
+  {
+    path: '',
     component: MainLayout,
     children: [
-      {
-        path: '',
-        loadComponent: () => import('./features/home/home').then((m) => m.Home),
-        canActivate: [authGuard],
-      },
       {
         path: 'home',
         loadComponent: () => import('./features/home/home').then((m) => m.Home),

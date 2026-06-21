@@ -13,7 +13,6 @@ export class Login {
   private nestAuthService = inject(NestAuthService);
   private router = inject(Router);
 
-  inValidCredential = signal(false);
   isLoading = signal(false);
   showPassword = signal(false);
 
@@ -42,7 +41,6 @@ export class Login {
   }
 
   async onSubmit() {
-    this.inValidCredential.set(false);
     this.profileForm.markAllAsTouched();
 
     if (this.profileForm.invalid) {
@@ -52,21 +50,14 @@ export class Login {
     this.isLoading.set(true);
 
     try {
-      const response = await this.nestAuthService.signIn({
+      await this.nestAuthService.signIn({
         identifier: this.username?.value || '',
         password: this.password?.value || '',
       });
-
-      if (response && response.token) {
-        console.log('Login exitoso');
-        this.router.navigateByUrl('/');
-      } else {
-        this.inValidCredential.set(true);
-      }
-    } catch (error) {
-      console.error('Error en login:', error);
-      this.inValidCredential.set(true);
-      this.isLoading.set(false);
+    } catch {
+      // credenciales inválidas: el loading screen mostrará el mensaje de error
+    } finally {
+      this.router.navigateByUrl('/');
     }
   }
 }
