@@ -36,6 +36,9 @@ export class Comment {
     default: false,
   })
   eliminado!: boolean;
+
+  createdAt!: Date;
+  updatedAt!: Date;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
