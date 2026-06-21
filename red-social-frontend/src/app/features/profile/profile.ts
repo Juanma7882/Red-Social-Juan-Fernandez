@@ -33,6 +33,11 @@ export class Profile {
   limit = signal(3);
 
   posts = signal<PostModel | null>(null);
+  isMenuOpen = signal(false);
+
+  toggleMenu() {
+    this.isMenuOpen.update(v => !v);
+  }
 
   ngOnInit() {
     const id = this.nestAuthService.currentUser()?._id;
@@ -59,6 +64,22 @@ export class Profile {
       console.log(error);
     }
   }
+  async onLike(postId: string) {
+    const post = this.posts()?.data.find(p => p._id === postId);
+    if (!post) return;
+    if (post.isLiked) {
+      await this.nestPostsService.unlikePost(postId);
+    } else {
+      await this.nestPostsService.likePost(postId);
+    }
+    await this.postsProfile();
+  }
+
+  async onDelete(postId: string) {
+    await this.nestPostsService.deletePosts(postId);
+    await this.postsProfile();
+  }
+
   async postsProfile() {
     try {
       const response = await this.nestPostsService.getPosts({

@@ -28,7 +28,7 @@ export class PostService {
     });
   }
 
-  async findAll(query: QueryPostDto) {
+  async findAll(query: QueryPostDto, user: JwtPayload) {
     const { orderBy, limit, offset, userId } = query;
 
     const limitNumber = Number(limit);
@@ -78,10 +78,14 @@ export class PostService {
       commentCounts.map((c) => [c._id.toString(), c.count]),
     );
 
-    // Agregar commentCount a cada post
+    // Agregar commentCount, isLiked y canDelete a cada post
     const data = posts.map((post) => ({
       ...post,
       commentCount: countMap.get(post._id.toString()) ?? 0,
+      isLiked: post.likes.some((id) => id.toString() === user.sub),
+      canDelete:
+        (post.usuarioId as any)._id.toString() === user.sub ||
+        user.perfil === 'administrador',
     }));
 
     const page = Math.floor(offsetNumber / limitNumber) + 1;

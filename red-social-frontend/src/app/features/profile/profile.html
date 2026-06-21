@@ -13,6 +13,34 @@
 
       <!-- Profile Info -->
       <div class="relative px-4 sm:px-6 pb-6">
+        <!-- 3 dots menu -->
+        <div class="absolute top-3 right-4 sm:right-6">
+          <button
+            type="button"
+            (click)="toggleMenu()"
+            class="text-gray-300 hover:text-white px-1 rounded transition leading-none text-xl font-bold"
+            aria-label="opciones de perfil"
+          >
+            ···
+          </button>
+          @if (isMenuOpen()) {
+            <div class="absolute right-0 top-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-20 min-w-36">
+              <button
+                type="button"
+                class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-lg"
+              >
+                Editar perfil
+              </button>
+              <button
+                type="button"
+                class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-lg"
+              >
+                Cambiar foto
+              </button>
+            </div>
+          }
+        </div>
+
         <!-- Avatar section - overlapped -->
         <div class="flex flex-col sm:flex-row items-center sm:items-end -mt-12 sm:-mt-16 mb-4">
           <!-- Profile Image -->
@@ -31,7 +59,7 @@
 
           <!-- Name & Username - visible on small screens below avatar, on larger screens beside -->
           <div class="sm:ml-5 mt-3 sm:mt-0 text-center sm:text-left flex-1">
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">{{ nombre() }} {{ apellido() }}</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-100">{{ nombre() }} {{ apellido() }}</h1>
             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-sm text-gray-500">
               <span class="font-mono bg-gray-900 px-3 py-1 rounded-full">@{{ username() }}</span>
               <span class="hidden sm:inline">•</span>
@@ -55,7 +83,7 @@
         <!-- Birthdate & Description -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100">
           <!-- Birthdate -->
-          <div class="col-span-1 flex items-center gap-3 text-sm text-gray-600">
+          <div class="col-span-1 flex items-center gap-3 text-sm text-gray-300">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -71,7 +99,7 @@
           </div>
 
           <!-- Created At -->
-          <div class="col-span-1 flex items-center gap-3 text-sm text-gray-600">
+          <div class="col-span-1 flex items-center gap-3 text-sm text-gray-300">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -87,7 +115,7 @@
           </div>
 
           <!-- Additional info placeholder (optional) -->
-          <div class="col-span-1 flex items-center gap-3 text-sm text-gray-600">
+          <div class="col-span-1 flex items-center gap-3 text-sm text-gray-300">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -132,9 +160,12 @@
         [titulo]="post.titulo"
         [descripcion]="post.mensaje"
         [imagen]="post.imagen"
+        [fechaDeCreacion]="post.createdAt"
         [meGusta]="post.likes.length.toString()"
         [isLiked]="post.isLiked ?? false"
         [canDelete]="post.canDelete ?? false"
+        (meGustaToggled)="onLike($event)"
+        (deletePost)="onDelete($event)"
       ></app-posts>
     }
   </div>

@@ -28,12 +28,10 @@ export class PostController {
     return this.postService.create(createPostDto, req.user);
   }
 
+  @UseGuards(JwtGuard)
   @Get()
-  findAll(
-    @Query()
-    query: QueryPostDto,
-  ) {
-    return this.postService.findAll(query);
+  findAll(@Query() query: QueryPostDto, @Req() req: { user: JwtPayload }) {
+    return this.postService.findAll(query, req.user);
   }
 
   @Get(':id')
