@@ -11,9 +11,7 @@ import {
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-// import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-// import JwtPayload from 'src/auth/interfaces/jwt-payload.auth.interface';
 import JwtPayload from '../auth/interfaces/jwt-payload.auth.interface';
 import { QueryPostDto } from './dto/quey-post.dto';
 

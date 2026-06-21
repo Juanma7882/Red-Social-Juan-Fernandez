@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostController } from './post.controller';
 import { Post, PostSchema } from './schemas/post.schema';
-// import { Comment, CommentSchema } from 'src/comments/schema/comment.schema';
 import { Comment, CommentSchema } from '../comments/schema/comment.schema';
 import {
   LoginHistory,
