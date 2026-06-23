@@ -13,6 +13,12 @@ import { orderBy, Posts as PostModel } from '../../core/models/posts.models';
 export class Home implements OnInit, AfterViewInit {
   readonly orderBy = orderBy;
   readonly listOrder: orderBy[] = [orderBy.fecha, orderBy.likes, orderBy.guardados, orderBy.compartidos];
+  readonly orderLabels: Record<orderBy, string> = {
+    [orderBy.fecha]: 'Fecha',
+    [orderBy.likes]: 'Likes',
+    [orderBy.guardados]: 'Guardados',
+    [orderBy.compartidos]: 'Compartidos',
+  };
   private currentOrder = this.listOrder[0];
   private offset: number = 0;
   private limit: number = 2;
