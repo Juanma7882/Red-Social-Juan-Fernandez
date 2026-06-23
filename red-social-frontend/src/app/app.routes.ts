@@ -6,6 +6,10 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
+    redirectTo: 'auth/login',
+  },
+  {
+    path: 'splash',
     loadComponent: () => import('./features/loading/loading').then((m) => m.Loading),
   },
   {
@@ -28,8 +32,7 @@ export const routes: Routes = [
       },
       {
         path: '**',
-        loadComponent: () => import('./features/home/home').then((m) => m.Home),
-        canActivate: [authGuard],
+        redirectTo: 'auth/login',
       },
     ],
   },

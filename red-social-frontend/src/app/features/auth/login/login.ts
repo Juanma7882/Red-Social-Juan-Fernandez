@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink], // Añadido RouterLink para el enlace de registro
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -35,8 +35,8 @@ export class Login {
 
   logInQuickly() {
     this.profileForm.patchValue({
-      username: 'juanmaf236@gmail.com',
-      password: '12345678',
+      username: 'juan',
+      password: 'Juan1234',
     });
   }
 
@@ -55,9 +55,9 @@ export class Login {
         password: this.password?.value || '',
       });
     } catch {
-      // credenciales inválidas: el loading screen mostrará el mensaje de error
+      // el splash mostrará el resultado según si el token es válido o no
     } finally {
-      this.router.navigateByUrl('/');
+      this.router.navigateByUrl('/splash');
     }
   }
 }

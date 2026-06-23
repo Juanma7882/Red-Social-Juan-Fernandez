@@ -12,5 +12,5 @@ export const noAuthGuard: CanActivateFn = async () => {
     return true;
   }
 
-  return router.createUrlTree(['']);
+  return router.createUrlTree(['/home']);
 };
