@@ -1,29 +1,21 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  inject,
-  Input,
-  OnChanges,
-  Output,
-  signal,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NestCommentsService } from '../../../core/services/nest.comments.service';
 import { Comment, CommentResponse } from '../../../core/models/comment.model';
+import { RelativeDatePipe } from '../../pipes/relative-date.pipe';
+import { FormatDatePipe } from '../../pipes/format-date.pipe';
+import { TruncatePipe } from '../../pipes/truncate.pipe';
+import { ClickOutsideDirective } from '../../directives/click-outside.directive';
+import { DebounceClickDirective } from '../../directives/debounce-click.directive';
+import { AutoFocusDirective } from '../../directives/auto-focus.directive';
 
 @Component({
   selector: 'app-posts',
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, RelativeDatePipe, FormatDatePipe, TruncatePipe, ClickOutsideDirective, DebounceClickDirective, AutoFocusDirective],
   templateUrl: './posts.html',
   styleUrl: './posts.css',
 })
-export class Posts implements AfterViewInit, OnChanges {
+export class Posts {
   private commentsService = inject(NestCommentsService);
 
   @Input() id = '';
@@ -41,12 +33,9 @@ export class Posts implements AfterViewInit, OnChanges {
   @Output() meGustaToggled = new EventEmitter<string>();
   @Output() deletePost = new EventEmitter<string>();
 
-  @ViewChild('desc') descEl!: ElementRef<HTMLParagraphElement>;
-
   isExpanded = false;
   isMenuOpen = false;
   isModalOpen = signal(false);
-  showVerMas = false;
 
   comments = signal<CommentResponse | null>(null);
   commentsError = signal(false);
@@ -54,6 +43,14 @@ export class Posts implements AfterViewInit, OnChanges {
   editingId = signal<string | null>(null);
   editingText = '';
   loadingComments = signal(true);
+
+  get commentCount(): number {
+    return this.comments()?.total ?? +this.comentarios;
+  }
+
+  get showVerMas(): boolean {
+    return this.descripcion.length > 150;
+  }
 
   openModal() {
     this.comments.set(null);
@@ -131,21 +128,6 @@ export class Posts implements AfterViewInit, OnChanges {
     this.loadComments(offset);
   }
 
-  ngAfterViewInit() {
-    this.checkOverflow();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['descripcion']) {
-      setTimeout(() => this.checkOverflow());
-    }
-  }
-
-  private checkOverflow() {
-    const el = this.descEl?.nativeElement;
-    if (el) this.showVerMas = el.scrollHeight > el.clientHeight;
-  }
-
   toggleDescription(event: Event) {
     event.stopPropagation();
     this.isExpanded = !this.isExpanded;
@@ -167,7 +149,6 @@ export class Posts implements AfterViewInit, OnChanges {
     this.deletePost.emit(this.id);
   }
 
-  @HostListener('document:click')
   closeMenu() {
     this.isMenuOpen = false;
   }

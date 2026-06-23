@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, effect, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
 import { Posts as PostsComponent } from '../../shared/components/posts/posts';
 import { NestPostsService } from '../../core/services/nest.posts.service';
 import { NestAuthService } from '../../core/services/nest.auth.service';
@@ -30,7 +30,16 @@ export class Home implements OnInit, AfterViewInit {
   constructor(
     private nestPostService: NestPostsService,
     private authService: NestAuthService,
-  ) {}
+  ) {
+    effect(() => {
+      const count = this.nestPostService.postCreated();
+      if (count > 0) {
+        this.offset = 0;
+        this.currentPage = 1;
+        this.getPosts(true);
+      }
+    });
+  }
 
   ngOnInit() {
     this.getPosts();

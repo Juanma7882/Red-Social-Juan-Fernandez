@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { NestAuthService } from './nest.auth.service';
 import { environment } from '../../../environments/environment';
 import { CreatePostDto, PostModel, QueryPostDto } from '../models/posts.models';
@@ -9,6 +9,12 @@ import { CreatePostDto, PostModel, QueryPostDto } from '../models/posts.models';
 export class NestPostsService {
   private auth = inject(NestAuthService);
   private readonly apiUrl = `${environment.apiUrl}posts`;
+
+  readonly postCreated = signal(0);
+
+  notifyPostCreated() {
+    this.postCreated.update((n) => n + 1);
+  }
 
   async createPosts(posts: CreatePostDto) {
     try {

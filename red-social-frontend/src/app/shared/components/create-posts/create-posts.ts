@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CloudinaryService } from '../../../core/services/cloudinary.service';
 import { NestPostsService } from '../../../core/services/nest.posts.service';
-import { CreatePostDto, responseCreatePostsDto } from '../../../core/models/posts.models';
+import { CreatePostDto } from '../../../core/models/posts.models';
 
 @Component({
   selector: 'app-create-posts',
@@ -68,16 +68,12 @@ export class CreatePosts {
       const postData = this.newPosts.value;
 
       const response = (await this.nestPostsService.createPosts(postData as CreatePostDto)) as { ok: boolean };
-      console.log('response', response);
       if (response.ok) {
-        this.modalError.set('¡Publicación creada exitosamente!');
         this.newPosts.reset();
         this.previewImage.set('');
         this.selectedFile.set(null);
-        setTimeout(() => {
-          this.modalError.set('');
-          this.closeModal();
-        }, 3000);
+        this.nestPostsService.notifyPostCreated();
+        this.closeModal();
       } else {
         throw new Error('Error al crear la publicación');
       }

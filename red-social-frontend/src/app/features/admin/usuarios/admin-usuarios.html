@@ -1,0 +1,154 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-white">Gestión de usuarios</h2>
+    <button
+      type="button"
+      (click)="openForm()"
+      class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-slate-900 text-sm font-semibold rounded-lg transition-colors"
+    >
+      + Nuevo usuario
+    </button>
+  </div>
+
+  <!-- Tabla -->
+  @if (loading()) {
+    <p class="text-slate-400 text-sm">Cargando usuarios...</p>
+  } @else if (users().length === 0) {
+    <p class="text-slate-400 text-sm">No hay usuarios registrados.</p>
+  } @else {
+    <div class="overflow-x-auto rounded-xl border border-slate-700">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-slate-800 text-slate-400 uppercase text-xs">
+          <tr>
+            <th class="px-4 py-3">Nombre</th>
+            <th class="px-4 py-3">Email</th>
+            <th class="px-4 py-3">Username</th>
+            <th class="px-4 py-3">Rol</th>
+            <th class="px-4 py-3">Estado</th>
+            <th class="px-4 py-3">Acción</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700">
+          @for (user of users(); track user._id) {
+            <tr class="bg-slate-900 hover:bg-slate-800 transition-colors">
+              <td class="px-4 py-3 text-white font-medium">{{ user.nombre }} {{ user.apellido }}</td>
+              <td class="px-4 py-3 text-slate-300">{{ user.email }}</td>
+              <td class="px-4 py-3 text-slate-300">@{{ user.username }}</td>
+              <td class="px-4 py-3">
+                @if (user.perfil === 'administrador') {
+                  <span class="px-2 py-0.5 bg-amber-400/20 text-amber-300 rounded-full text-xs font-medium">Admin</span>
+                } @else {
+                  <span class="px-2 py-0.5 bg-slate-700 text-slate-300 rounded-full text-xs font-medium">Usuario</span>
+                }
+              </td>
+              <td class="px-4 py-3">
+                @if (user.habilitado) {
+                  <span class="px-2 py-0.5 bg-green-400/20 text-green-400 rounded-full text-xs font-medium">Activo</span>
+                } @else {
+                  <span class="px-2 py-0.5 bg-red-400/20 text-red-400 rounded-full text-xs font-medium">Inactivo</span>
+                }
+              </td>
+              <td class="px-4 py-3">
+                <button
+                  type="button"
+                  (click)="toggleHabilitado(user)"
+                  [class]="user.habilitado
+                    ? 'px-3 py-1 text-xs rounded-lg font-medium bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors'
+                    : 'px-3 py-1 text-xs rounded-lg font-medium bg-green-500/20 text-green-400 hover:bg-green-500/30 transition-colors'"
+                >
+                  {{ user.habilitado ? 'Deshabilitar' : 'Habilitar' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- Modal Nuevo Usuario -->
+@if (showForm()) {
+  <div class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" (click)="closeForm()">
+    <div
+      class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-6 space-y-4"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between">
+        <h3 class="text-white font-semibold text-lg">Nuevo usuario</h3>
+        <button type="button" (click)="closeForm()" class="text-slate-400 hover:text-white transition-colors text-xl leading-none">✕</button>
+      </div>
+
+      <form (ngSubmit)="submitForm()" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Nombre</label>
+            <input type="text" [(ngModel)]="form.nombre" name="nombre" required
+              class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Apellido</label>
+            <input type="text" [(ngModel)]="form.apellido" name="apellido" required
+              class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Email</label>
+          <input type="email" [(ngModel)]="form.email" name="email" required
+            class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Username</label>
+          <input type="text" [(ngModel)]="form.username" name="username" required
+            class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Contraseña</label>
+          <input type="password" [(ngModel)]="form.password" name="password" required
+            class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Fecha de nacimiento</label>
+          <input type="date" [(ngModel)]="form.fechaNacimiento" name="fechaNacimiento"
+            class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-2">Rol</label>
+          <div class="flex gap-6">
+            <label class="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+              <input type="radio" [(ngModel)]="form.perfil" name="perfil" value="usuario"
+                class="accent-amber-400" />
+              Usuario
+            </label>
+            <label class="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+              <input type="radio" [(ngModel)]="form.perfil" name="perfil" value="administrador"
+                class="accent-amber-400" />
+              Administrador
+            </label>
+          </div>
+        </div>
+
+        @if (formError()) {
+          <p class="text-red-400 text-xs">{{ formError() }}</p>
+        }
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" (click)="closeForm()"
+            class="flex-1 py-2 text-sm rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" [disabled]="formLoading()"
+            class="flex-1 py-2 text-sm rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-900 font-semibold transition-colors disabled:opacity-50">
+            {{ formLoading() ? 'Creando...' : 'Crear usuario' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

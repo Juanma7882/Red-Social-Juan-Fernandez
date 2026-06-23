@@ -129,6 +129,32 @@
         }
       </button>
     }
+    <!-- Admin -->
+    @if (nest.userRole() === 'administrador') {
+      <a
+        routerLink="/admin"
+        routerLinkActive
+        #rlaAdmin="routerLinkActive"
+        class="flex items-center gap-4 px-3 py-[11px] rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors cursor-pointer text-black dark:text-white group relative"
+        [class.justify-center]="collapsed()"
+      >
+        <div class="shrink-0 w-[26px] h-[26px] flex items-center justify-center">
+          <svg class="w-[26px] h-[26px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            [attr.stroke-width]="rlaAdmin.isActive ? '2.5' : '2'" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        @if (!collapsed()) {
+          <span class="text-[16px] leading-5 whitespace-nowrap" [class.font-bold]="rlaAdmin.isActive">Admin</span>
+        } @else {
+          <span class="absolute left-full ml-4 px-3 py-1.5 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black text-sm font-medium rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap shadow-lg transition-opacity z-50">
+            Admin
+          </span>
+        }
+      </a>
+    }
   </div>
 
   <!-- Bottom: Crear / Perfil / Más -->

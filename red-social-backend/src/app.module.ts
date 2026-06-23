@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
 import { CommonModule } from './common/common.module';
 import { CommentsModule } from './comments/comments.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -25,8 +26,8 @@ import { CommentsModule } from './comments/comments.module';
     UsersModule,
     PostModule,
     CommonModule,
-    PostModule,
     CommentsModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

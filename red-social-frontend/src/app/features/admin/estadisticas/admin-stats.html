@@ -1,0 +1,78 @@
+<div class="space-y-6">
+  <!-- Header + selector de fechas -->
+  <div class="flex flex-col sm:flex-row sm:items-end gap-4">
+    <div>
+      <h2 class="text-lg font-semibold text-white mb-1">Estadísticas</h2>
+      <p class="text-slate-400 text-sm">Seleccioná un rango de fechas para filtrar los datos.</p>
+    </div>
+    <div class="flex flex-wrap items-end gap-3 sm:ml-auto">
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Desde</label>
+        <input
+          type="date"
+          [(ngModel)]="fromDate"
+          name="fromDate"
+          class="bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400"
+        />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Hasta</label>
+        <input
+          type="date"
+          [(ngModel)]="toDate"
+          name="toDate"
+          class="bg-slate-800 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-amber-400"
+        />
+      </div>
+      <button
+        type="button"
+        (click)="loadStats()"
+        [disabled]="loading()"
+        class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-slate-900 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+      >
+        {{ loading() ? 'Cargando...' : 'Actualizar' }}
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <p class="text-red-400 text-sm bg-red-400/10 border border-red-400/30 rounded-lg px-4 py-3">
+      {{ error() }}
+    </p>
+  }
+
+  <!-- Gráficos -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- Posts por usuario -->
+    <div class="bg-slate-900 border border-slate-700 rounded-xl p-4">
+      @if (loading()) {
+        <div class="h-48 flex items-center justify-center">
+          <span class="text-slate-500 text-sm">Cargando...</span>
+        </div>
+      }
+      <canvas #chartPostsByUser [class.hidden]="loading()"></canvas>
+    </div>
+
+    <!-- Comentarios por día -->
+    <div class="bg-slate-900 border border-slate-700 rounded-xl p-4">
+      @if (loading()) {
+        <div class="h-48 flex items-center justify-center">
+          <span class="text-slate-500 text-sm">Cargando...</span>
+        </div>
+      }
+      <canvas #chartCommentsTime [class.hidden]="loading()"></canvas>
+    </div>
+
+    <!-- Comentarios por publicación (ocupa ancho completo) -->
+    <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 lg:col-span-2">
+      @if (loading()) {
+        <div class="h-48 flex items-center justify-center">
+          <span class="text-slate-500 text-sm">Cargando...</span>
+        </div>
+      }
+      <canvas #chartCommentsByPost [class.hidden]="loading()"></canvas>
+    </div>
+
+  </div>
+</div>

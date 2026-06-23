@@ -1,13 +1,14 @@
 import { Component, Inject, signal } from '@angular/core';
 import { NestAuthService } from '../../core/services/nest.auth.service';
 import { NestPostsService } from '../../core/services/nest.posts.service';
-import { SIGNAL } from '@angular/core/primitives/signals';
 import { orderBy, PostModel } from '../../core/models/posts.models';
 import { Posts } from '../../shared/components/posts/posts';
+import { FormatDatePipe } from '../../shared/pipes/format-date.pipe';
+import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 
 @Component({
   selector: 'app-profile',
-  imports: [Posts],
+  imports: [Posts, FormatDatePipe, RelativeDatePipe],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })

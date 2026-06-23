@@ -24,7 +24,9 @@
             ···
           </button>
           @if (isMenuOpen()) {
-            <div class="absolute right-0 top-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-20 min-w-36">
+            <div
+              class="absolute right-0 top-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-20 min-w-36"
+            >
               <button
                 type="button"
                 class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-lg"
@@ -94,7 +96,7 @@
             </svg>
             <div>
               <span class="block text-xs uppercase tracking-wider text-gray-400">Birthdate</span>
-              <span class="font-medium">{{ fechaNacimiento() }}</span>
+              <span class="font-medium">{{ fechaNacimiento() | formatDate }}</span>
             </div>
           </div>
 
@@ -110,7 +112,7 @@
             </svg>
             <div>
               <span class="block text-xs uppercase tracking-wider text-gray-400">Joined</span>
-              <span class="font-medium">{{ createdAt() }}</span>
+              <span class="font-medium">{{ createdAt() | relativeDate }}</span>
             </div>
           </div>
 
@@ -144,7 +146,7 @@
             </svg>
             <div>
               <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">About</h3>
-              <p class="text-gray-700 mt-1 leading-relaxed">{{ descripcion || 'No description provided.' }}</p>
+              <p class="text-gray-700 mt-1 leading-relaxed">{{ descripcion() || 'No description provided.' }}</p>
             </div>
           </div>
         </div>

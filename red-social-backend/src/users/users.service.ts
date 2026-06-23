@@ -22,7 +22,11 @@ export class UsersService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userModel.find().select('-password');
+  }
+
+  async enable(id: string) {
+    return this.userModel.findByIdAndUpdate(id, { habilitado: true }, { new: true });
   }
 
   findOne(id: string) {
