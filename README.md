@@ -19,6 +19,7 @@
 
 - [Descripción](#descripción)
 - [Funcionalidades](#funcionalidades)
+- [Capturas](#capturas)
 - [Stack tecnológico](#stack-tecnológico)
 - [Arquitectura](#arquitectura)
 - [Primeros pasos](#primeros-pasos)
@@ -72,6 +73,61 @@ El proyecto está compuesto por dos aplicaciones independientes:
 - Progressive Web App (service worker).
 - 3 *pipes* propios (`format-date`, `relative-date`, `truncate`).
 - 3 directivas propias (`auto-focus`, `click-outside`, `debounce-click`).
+
+## Capturas
+
+### Feed
+
+Ordenable por fecha, *likes*, guardados y compartidos, con navegación lateral.
+
+<p align="center">
+  <img src="docs/screenshots/feed.jpg" alt="Feed de publicaciones" width="100%">
+</p>
+
+<details>
+<summary>Ver el feed completo</summary>
+
+<p align="center">
+  <img src="docs/screenshots/feed-completo.png" alt="Feed completo" width="50%">
+</p>
+
+</details>
+
+### Detalle de publicación y comentarios
+
+Visor de publicación con comentarios, *likes* y edición o eliminación de comentarios propios.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/post-detalle.jpg" alt="Detalle de publicación sin comentarios"></td>
+    <td width="50%"><img src="docs/screenshots/post-comentarios.jpg" alt="Detalle de publicación con comentarios"></td>
+  </tr>
+</table>
+
+### Perfil de usuario
+
+Datos del usuario, descripción y sus últimas publicaciones.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/perfil.jpg" alt="Perfil de usuario"></td>
+    <td width="50%"><img src="docs/screenshots/perfil-publicaciones.png" alt="Publicaciones del perfil"></td>
+  </tr>
+</table>
+
+### Panel de administración
+
+Gestión de usuarios: rol, estado y habilitar o deshabilitar cuentas.
+
+<p align="center">
+  <img src="docs/screenshots/admin-usuarios.png" alt="Panel de administración de usuarios" width="100%">
+</p>
+
+### Diseño adaptable
+
+<p align="center">
+  <img src="docs/screenshots/perfil-responsive.jpg" alt="Perfil en pantalla reducida" width="70%">
+</p>
 
 ## Stack tecnológico
 
@@ -155,7 +211,41 @@ Ciclo de una petición: `Request → Guards (JWT / rol) → Pipes (validación d
 
 ### Diagramas
 
-> Los diagramas están en [Mermaid](https://mermaid.js.org/) y se renderizan automáticamente en GitHub.
+#### Arquitectura general
+
+<p align="center">
+  <img src="docs/diagramas/arquitectura.png" alt="Diagrama de arquitectura de Red Social" width="100%">
+</p>
+
+> Versión interactiva (zoom, búsqueda, trazado de relaciones y tema claro/oscuro): [`docs/diagramas/arquitectura.html`](docs/diagramas/arquitectura.html). Generada con [archify](https://github.com/tt-a1i/archify) desde [`arquitectura.json`](docs/diagramas/arquitectura.json).
+
+#### Flujo de datos
+
+<p align="center">
+  <img src="docs/diagramas/flujo-datos.png" alt="Flujo de datos de Red Social" width="100%">
+</p>
+
+#### Secuencia de autenticación
+
+<p align="center">
+  <img src="docs/diagramas/flujo-autenticacion.png" alt="Diagrama de secuencia de autenticación" width="100%">
+</p>
+
+#### Flujo para publicar un post
+
+<p align="center">
+  <img src="docs/diagramas/publicar-post.png" alt="Flujo para publicar un post" width="100%">
+</p>
+
+#### Ciclo de vida de la sesión
+
+<p align="center">
+  <img src="docs/diagramas/sesion-jwt.png" alt="Ciclo de vida de la sesión JWT" width="100%">
+</p>
+
+> Versiones interactivas en [`docs/diagramas/`](docs/diagramas): [flujo de datos](docs/diagramas/flujo-datos.dataflow.html), [secuencia de autenticación](docs/diagramas/flujo-autenticacion.sequence.html), [publicar un post](docs/diagramas/publicar-post.workflow.html) y [ciclo de vida de la sesión](docs/diagramas/sesion-jwt.lifecycle.html).
+
+Los siguientes diagramas están en [Mermaid](https://mermaid.js.org/) y se renderizan automáticamente en GitHub. Incluyen el modelo de datos y variantes más detalladas del flujo de autenticación.
 
 #### Vista general del sistema
 

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": { "title": "Ciclo de vida de la sesión", "quality_profile": "showcase", "viewBox": [1030, 640] },
+  "lanes": [
+    { "id": "main", "label": "Sesión" },
+    { "id": "terminal", "label": "Salidas" }
+  ],
+  "states": [
+    { "id": "anonimo", "type": "start", "label": "Sin sesión", "sublabel": "visitante", "lane": "main", "col": 0, "step": "01" },
+    { "id": "autenticando", "type": "active", "label": "Autenticando", "sublabel": "POST /auth/login", "lane": "main", "col": 1, "step": "02" },
+    { "id": "activa", "type": "active", "label": "Sesión activa", "sublabel": "JWT de 15 min", "lane": "main", "col": 2, "step": "03" },
+    { "id": "porvencer", "type": "waiting", "label": "Por vencer", "sublabel": "modal a los 10 min", "lane": "main", "col": 3, "step": "04" },
+    { "id": "cerrada", "type": "success", "label": "Sesión cerrada", "sublabel": "logout", "lane": "terminal", "col": 0 },
+    { "id": "expirada", "type": "failure", "label": "Expirada", "sublabel": "401 → login", "lane": "terminal", "col": 1 }
+  ],
+  "transitions": [
+    { "id": "login", "from": "anonimo", "to": "autenticando", "variant": "emphasis" },
+    { "id": "token", "from": "autenticando", "to": "activa", "variant": "emphasis" },
+    { "id": "diez-min", "from": "activa", "to": "porvencer", "variant": "default" },
+    { "id": "logout", "from": "activa", "to": "cerrada", "variant": "default", "route": "drop" },
+    { "id": "timeout", "from": "porvencer", "to": "expirada", "variant": "security", "route": "drop" }
+  ]
+}

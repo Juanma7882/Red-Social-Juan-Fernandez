@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arquitectura de Red Social",
+    "quality_profile": "showcase",
+    "locale": "en"
+  },
+  "components": [
+    { "id": "usuarios", "type": "external", "label": "Usuarios", "sublabel": "Navegador / PWA", "pos": [40, 250], "size": [130, 64] },
+    { "id": "spa", "type": "frontend", "label": "Angular 21", "sublabel": "SPA lazy-loaded", "tag": "Service Worker", "pos": [260, 250], "size": [140, 64] },
+    { "id": "cloudinary", "type": "external", "label": "Cloudinary", "sublabel": "imágenes de perfil", "pos": [260, 440], "size": [140, 64] },
+    { "id": "guards", "type": "security", "label": "JwtGuard / AdminGuard", "sublabel": "ValidationPipe global", "tag": "JWT 15 min", "pos": [510, 250], "size": [160, 64] },
+    { "id": "auth", "type": "backend", "label": "Auth + Users", "sublabel": "login · refresh · roles", "pos": [760, 90], "size": [150, 64] },
+    { "id": "contenido", "type": "backend", "label": "Posts + Comments", "sublabel": "likes · baja lógica", "pos": [760, 250], "size": [150, 64] },
+    { "id": "stats", "type": "backend", "label": "Stats", "sublabel": "dashboard admin", "pos": [760, 410], "size": [150, 64] },
+    { "id": "db", "type": "database", "label": "MongoDB", "sublabel": "Mongoose", "pos": [1010, 250], "size": [130, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Frontend · Vercel", "wraps": ["spa"] },
+    { "kind": "region", "label": "Backend · NestJS 11", "wraps": ["guards", "auth", "contenido", "stats"] }
+  ],
+  "connections": [
+    { "id": "usuarios-spa", "from": "usuarios", "to": "spa", "label": "HTTPS", "variant": "emphasis" },
+    { "id": "spa-guards", "from": "spa", "to": "guards", "label": "REST + Bearer", "variant": "emphasis" },
+    { "id": "spa-cloudinary", "from": "spa", "to": "cloudinary", "label": "upload", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "labelDy": 24 },
+    { "id": "guards-auth", "from": "guards", "to": "auth" },
+    { "id": "guards-contenido", "from": "guards", "to": "contenido" },
+    { "id": "guards-stats", "from": "guards", "to": "stats" },
+    { "id": "auth-db", "from": "auth", "to": "db" },
+    { "id": "contenido-db", "from": "contenido", "to": "db" },
+    { "id": "stats-db", "from": "stats", "to": "db" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Frontend", "items": ["Rutas lazy-loaded con guards", "Estado con signals", "PWA con service worker"] },
+    { "dot": "emerald", "title": "Backend", "items": ["Módulos por dominio", "Validación con pipes y DTOs", "Baja lógica en los datos"] },
+    { "dot": "rose", "title": "Seguridad", "items": ["JWT de 15 minutos con refresh", "Rol administrador para users y stats"] }
+  ]
+}

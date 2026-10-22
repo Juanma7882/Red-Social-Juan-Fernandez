@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": { "title": "Flujo de datos", "quality_profile": "showcase", "viewBox": [1075, 520] },
+  "stages": [
+    { "label": "Cliente" },
+    { "label": "Seguridad" },
+    { "label": "Servicios" },
+    { "label": "Datos" },
+    { "label": "Consumo" }
+  ],
+  "nodes": [
+    { "id": "spa", "type": "frontend", "label": "Angular SPA", "sublabel": "requests REST", "stage": 0, "row": 1 },
+    { "id": "guards", "type": "security", "label": "Guards + Pipes", "sublabel": "JWT y DTOs", "stage": 1, "row": 1, "tag": "valida" },
+    { "id": "modulos", "type": "backend", "label": "Módulos", "sublabel": "posts · comments · stats", "stage": 2, "row": 1 },
+    { "id": "mongo", "type": "database", "label": "MongoDB", "sublabel": "colecciones", "stage": 3, "row": 1 },
+    { "id": "feed", "type": "frontend", "label": "Feed y perfil", "sublabel": "publicaciones", "stage": 4, "row": 0 },
+    { "id": "dashboard", "type": "frontend", "label": "Dashboard", "sublabel": "gráficos Chart.js", "stage": 4, "row": 2 }
+  ],
+  "flows": [
+    { "from": "spa", "to": "guards", "label": "request", "classification": "JWT", "variant": "emphasis", "route": "straight" },
+    { "from": "guards", "to": "modulos", "label": "válido", "classification": "DTO + rol", "variant": "emphasis", "route": "straight" },
+    { "from": "modulos", "to": "mongo", "label": "Mongoose", "classification": "lectura/escritura", "variant": "emphasis", "route": "straight" },
+    { "from": "mongo", "to": "feed", "label": "posts", "classification": "JSON", "variant": "default" },
+    { "from": "mongo", "to": "dashboard", "label": "métricas", "classification": "solo admin", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "rose", "title": "Entrada", "items": ["Todo request pasa por guards y pipes", "Los DTOs rechazan campos desconocidos"] },
+    { "dot": "emerald", "title": "Persistencia", "items": ["Posts, comentarios y stats usan Mongoose", "Stats solo lee y agrega"] },
+    { "dot": "cyan", "title": "Consumo", "items": ["El feed y el perfil muestran publicaciones", "El dashboard grafica las métricas"] }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": { "title": "Flujo de autenticación", "quality_profile": "showcase", "viewBox": [1075, 560], "column_fit": "spread" },
+  "participants": [
+    { "id": "usuario", "type": "external", "label": "Usuario", "sublabel": "navegador" },
+    { "id": "spa", "type": "frontend", "label": "Angular", "sublabel": "NestAuthService" },
+    { "id": "api", "type": "backend", "label": "NestJS", "sublabel": "AuthController" },
+    { "id": "db", "type": "database", "label": "MongoDB", "sublabel": "users" }
+  ],
+  "segments": [
+    { "from": 150, "to": 316, "label": "Login" },
+    { "from": 328, "to": 392, "label": "Authorize" },
+    { "from": 404, "to": 468, "label": "Refresh" }
+  ],
+  "messages": [
+    { "from": "usuario", "to": "spa", "y": 170, "label": "email + contraseña", "variant": "emphasis" },
+    { "from": "spa", "to": "api", "y": 202, "label": "POST /auth/login", "variant": "emphasis" },
+    { "from": "api", "to": "db", "y": 234, "label": "buscar usuario", "variant": "default" },
+    { "from": "db", "to": "api", "y": 266, "label": "usuario + hash", "variant": "return" },
+    { "from": "api", "to": "spa", "y": 298, "label": "JWT 15 min + datos", "variant": "return" },
+    { "from": "spa", "to": "api", "y": 346, "label": "POST /auth/authorize", "variant": "default" },
+    { "from": "api", "to": "spa", "y": 378, "label": "datos del usuario", "variant": "return" },
+    { "from": "spa", "to": "api", "y": 424, "label": "POST /auth/refresh", "variant": "dashed" },
+    { "from": "api", "to": "spa", "y": 456, "label": "nuevo JWT 15 min", "variant": "return" }
+  ],
+  "activations": [
+    { "participant": "spa", "from": 164, "to": 464, "type": "frontend" },
+    { "participant": "api", "from": 196, "to": 304, "type": "backend" },
+    { "participant": "db", "from": 228, "to": 272, "type": "database" },
+    { "participant": "api", "from": 340, "to": 384, "type": "backend" },
+    { "participant": "api", "from": 418, "to": 462, "type": "backend" }
+  ]
+}

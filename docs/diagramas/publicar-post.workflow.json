@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": { "title": "Flujo para publicar un post", "quality_profile": "showcase" },
+  "lanes": [
+    { "id": "client", "label": "Cliente Angular" },
+    { "id": "api", "label": "API NestJS" },
+    { "id": "data", "label": "Servicios y datos" }
+  ],
+  "phases": [
+    { "id": "captura", "label": "Captura", "fromCol": 0, "toCol": 1 },
+    { "id": "validacion", "label": "Validación", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "persistencia", "label": "Persistencia", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["user", "form", "guard", "pipe", "svc", "db", "feed"],
+  "nodes": [
+    { "id": "user", "lane": "client", "col": 0, "type": "external", "label": "Usuario", "sublabel": "crea el post", "width": 132 },
+    { "id": "form", "lane": "client", "col": 1, "type": "frontend", "label": "Formulario", "sublabel": "título + imagen", "width": 132 },
+    { "id": "feed", "lane": "client", "col": 5, "type": "frontend", "label": "Feed", "sublabel": "post publicado", "width": 132 },
+    { "id": "guard", "lane": "api", "col": 2, "type": "security", "label": "JwtGuard", "sublabel": "valida token", "width": 132 },
+    { "id": "pipe", "lane": "api", "col": 3, "type": "backend", "label": "ValidationPipe", "sublabel": "DTO", "width": 132 },
+    { "id": "svc", "lane": "api", "col": 4, "type": "backend", "label": "PostService", "sublabel": "crear post", "width": 132 },
+    { "id": "cloud", "lane": "data", "col": 1, "type": "cloud", "label": "Cloudinary", "sublabel": "imagen → URL", "width": 132 },
+    { "id": "error", "lane": "data", "col": 3, "type": "security", "label": "Rechazo", "sublabel": "401 / 400", "width": 132 },
+    { "id": "db", "lane": "data", "col": 4, "type": "database", "label": "MongoDB", "sublabel": "colección posts", "width": 132 }
+  ],
+  "edges": [
+    { "id": "e-user-form", "from": "user", "to": "form", "variant": "default" },
+    { "id": "e-form-guard", "from": "form", "to": "guard", "label": "POST /posts", "variant": "emphasis" },
+    { "id": "e-guard-pipe", "from": "guard", "to": "pipe", "variant": "default" },
+    { "id": "e-pipe-svc", "from": "pipe", "to": "svc", "variant": "emphasis" },
+    { "id": "e-svc-db", "from": "svc", "to": "db", "label": "guardar", "variant": "emphasis" },
+    { "id": "e-db-feed", "from": "db", "to": "feed", "label": "201", "variant": "emphasis", "role": "return" },
+    { "id": "e-form-cloud", "from": "form", "to": "cloud", "label": "subir imagen", "variant": "dashed", "role": "branch" },
+    { "id": "e-pipe-error", "from": "pipe", "to": "error", "label": "inválido", "variant": "security", "role": "error" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Entrada", "items": ["La imagen se sube a Cloudinary y se guarda solo la URL", "El formulario envía el post con el Bearer token"] },
+    { "dot": "rose", "title": "Control", "items": ["El guard rechaza tokens inválidos con 401", "El pipe rechaza DTOs inválidos con 400"] }
+  ]
+}
